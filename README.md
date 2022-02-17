@@ -7,6 +7,8 @@ This repository contains a collection of diagrams that walk through the evolutio
 
 **Note that in the patterns with firewalls, the firewalls are assumed to have a separate dedicated network interface in a management subnet. This is not shown in the diagrams.**
 
+**Credit for blackhole routes in the advanced patterns to [Palo Alto](https://www.paloaltonetworks.com/resources/guides/azure-transit-vnet-deployment-guide).**
+
 For detail on the traffic flows of the more complex network architectures listed here, reference [this repository](https://github.com/mattfeltonma/azure-networking-patterns).
 
 ## Sections
@@ -145,7 +147,7 @@ In this pattern there is a dedicated virtual network used for on-premises connec
 
 This is one of the more common patterns for organizations using Azure.
 
-Organized are encouraged to explore [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-about) in place of this pattern due to the additional capabilities and managed nature of Virtual WAN. There are significant considerations to using [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-faq) and organizations are encouraged to consult with their Microsoft account teams or trusted Microsoft partners before moving ahead with Azure Virtual WAN..
+Organized are encouraged to explore [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-about) in place of this pattern due to the additional capabilities and managed nature of Virtual WAN. There are significant considerations to using [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-faq) and organizations are encouraged to consult with their Microsoft account teams or trusted Microsoft partners before moving ahead with Azure Virtual WAN.
 
 Facts:
 * VMs (virtual machines) use the default system routes to communicate with each other within a virtual network.
