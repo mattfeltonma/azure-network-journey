@@ -30,6 +30,8 @@ For detail on the traffic flows of the more complex network architectures listed
 
 ## Peered VNets And On-Premises Connectivity With Multiple Workloads
 
+## Hub And Spoke With A Flat Network
+
 ## Hub And Spoke With A Flat Network And Forced Tunneling
 
 ## Hub And Spoke With North And South Firewall
