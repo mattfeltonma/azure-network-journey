@@ -67,7 +67,7 @@ In this pattern there is a single virtual network with multiple subnets and the 
 
 This is a common pattern for proof-of-concepts where on-premises connectivity is required.
 
-Facts: 
+## Facts
 * VMs (virtual machines) use the default system routes to communicate with each other.
 * Connectivity back on-premises is provided by a Virtual Network Gateway with either a VPN or ExpressRoute connection.
 * Routes are exchanged between on-premises network equipment and the Virtual Network Gateway using BGP. 
