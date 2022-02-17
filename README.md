@@ -93,7 +93,7 @@ Considerations of this pattern include:
 ## Hub And Spoke With A Flat Network
 In this pattern there is a dedicated virtual network used for on-premises connectivity which is shared with each workload that each have their own dedicated virtual network.
 
-Facts:
+### Facts:
 * VMs (virtual machines) use the default system routes to communicate with each other within a virtual network.
 * Workloads have dedicated subscriptions containing their virtual network and workload resources creating separate blast radiuses.
 * Connectivity back on-premises is provided to both workloads by a Virtual Network Gateway in the transit virtual network.
@@ -101,7 +101,7 @@ Facts:
 * VMs use routes learned from the Virtual Network Gateway to communicate cross workload.
 * Individual subnets can be assigned separate Network Security Groups controlling inbound and outbound traffic for each tier of the workload and between workloads.
 
-Considerations of this pattern include:
+### Considerations of this pattern include:
 * This pattern creates a flat network where the only option for mediation between workloads is the Network Security Groups.
 * All resources have direct access to the Internet through the default system route.
 
