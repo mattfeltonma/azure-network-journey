@@ -26,10 +26,10 @@ For detail on the traffic flows of the more complex network architectures listed
 ## Single VNet And Single Subnet
 In this pattern there is a single virtual network with a single subnet all resources are placed in. 
 
-Facts:
+#### Facts
 * VMs (virtual machines) use the default system routes to communicate with each other.
 
-Considerations of this pattern include:
+#### Considerations
 
 * Scaling this pattern can be a significant problem because subnets cannot be resized once network interfaces are associated with them.
 * Mediation of traffic can be done with Network Security Groups, but it can be complex to manage the rules and could lead to mistakes.
@@ -41,22 +41,22 @@ In this pattern there is a single virtual network with multiple subnets.
 
 This is a common pattern for proof-of-concepts where there is no requirement for on-premises connectivity.
 
-Facts:
+#### Facts
 * Individual subnets can be assigned separate Network Security Groups controlling inbound and outbound traffic for each tier of the workload.
 * VMs (virtual machines) use the default system routes to communicate with each other.
 
-Considerations of this pattern include:
+#### Considerations
 * All resources have direct access to the Internet through the default system route.
 * This pattern does not allow for connectivity back on-premises.
 
 ## Single VNet And Multiple Workloads
 In this pattern there is a single virtual network with multiple subnets hosting multiple workloads. 
 
-Facts:
+#### Facts
 * Individual subnets can be assigned separate Network Security Groups controlling inbound and outbound traffic for each tier of the workload and between workloads.
 * VMs (virtual machines) use the default system routes to communicate with each other which includes cross workload.
 
-Considerations of this pattern include:
+#### Considerations
 * All resources will need to be in the same Azure subscription creating a single blast radius for both workloads.
 * There is no simple way to restrict Azure RBAC permissions to management of a specific subnet(s) in the situation where the workloads are managed by different teams.
 * All resources have direct access to the Internet through the default system route.
@@ -67,33 +67,33 @@ In this pattern there is a single virtual network with multiple subnets and the 
 
 This is a common pattern for proof-of-concepts where on-premises connectivity is required.
 
-## Facts
+#### Facts
 * VMs (virtual machines) use the default system routes to communicate with each other.
 * Connectivity back on-premises is provided by a Virtual Network Gateway with either a VPN or ExpressRoute connection.
 * Routes are exchanged between on-premises network equipment and the Virtual Network Gateway using BGP. 
 
-Considerations of this pattern include:
+#### Considerations
 * The Virtual Network Gateway resource is in the same subscription as the workload. This creates a single blast radius which includes both on-premises connectivity and workload resources.
 * All resources have direct access to the Internet through the default system route.
 
 ## Peered VNets And On-Premises Connectivity With Multiple Workloads
 In this pattern each workload is its own virtual network and requires on-premises connectivity. 
 
-Facts:
+#### Facts
 * VMs (virtual machines) use the default system routes to communicate with each other which includes cross workload.
 * Workloads have dedicated subscriptions containing their virtual network and workload resources creating separate blast radiuses.
 * Connectivity back on-premises is provided to both workloads by a Virtual Network Gateway in one of the virtual networks.
 * Peerings between the virtual networks are configured [gateway transit](https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-peering-gateway-transit) allowing the workloads to share the on-premises connectivity provided by the Virtual Network Gateway because the learned routes are propagated into the peered virtual network.
 * Individual subnets can be assigned separate Network Security Groups controlling inbound and outbound traffic for each tier of the workload and between workloads.
 
-Considerations of this pattern include:
+#### Considerations
 * The Virtual Network Gateway resource is in the same subscription as the workload. This creates a single blast radius for on-premises connectivity for both workloads.
 * All resources have direct access to the Internet through the default system route.
 
 ## Hub And Spoke With A Flat Network
 In this pattern there is a dedicated virtual network used for on-premises connectivity which is shared with each workload that each have their own dedicated virtual network.
 
-### Facts:
+#### Facts
 * VMs (virtual machines) use the default system routes to communicate with each other within a virtual network.
 * Workloads have dedicated subscriptions containing their virtual network and workload resources creating separate blast radiuses.
 * Connectivity back on-premises is provided to both workloads by a Virtual Network Gateway in the transit virtual network.
@@ -101,7 +101,7 @@ In this pattern there is a dedicated virtual network used for on-premises connec
 * VMs use routes learned from the Virtual Network Gateway to communicate cross workload.
 * Individual subnets can be assigned separate Network Security Groups controlling inbound and outbound traffic for each tier of the workload and between workloads.
 
-### Considerations of this pattern include:
+#### Considerations
 * This pattern creates a flat network where the only option for mediation between workloads is the Network Security Groups.
 * All resources have direct access to the Internet through the default system route.
 
@@ -110,7 +110,7 @@ In this pattern there is a dedicated virtual network used for on-premises connec
 
 This is a common pattern for organizations new to Azure that may have a significant capital investment in security appliances on-premises that are not yet fully depreciated and are comfortable mediating network traffic between workloads using Network Security Groups.
 
-Facts:
+#### Facts
 * VMs (virtual machines) use the default system routes to communicate with each other within a virtual network.
 * Workloads have dedicated subscriptions containing their virtual network and workload resources creating separate blast radiuses.
 * Connectivity back on-premises is provided to both workloads by a Virtual Network Gateway in the transit virtual network.
@@ -119,7 +119,7 @@ Facts:
 * Individual subnets can be assigned separate Network Security Groups controlling inbound and outbound traffic for each tier of the workload and between workloads.
 * A default route learned from on-premises is propagated to each workload virtual network invalidate the default system route to the Internet forcing Internet-bound traffic back on-premises.
 
-Considerations of this pattern include:
+#### Considerations
 * This pattern creates a flat network where the only option for mediation between workloads is the Network Security Groups.
 * Additional costs and latency will be incurred for egressing Internet-bound traffic back on-premises.
 
@@ -128,7 +128,7 @@ In this pattern there is a dedicated virtual network used for on-premises connec
 
 This is a common pattern for organizations new to Azure that may have a significant capital investment in security appliances on-premises that are not yet fully depreciated but want mediation, inspection, and/or centralized logging between workloads which is provided by a firewall in Azure.
 
-Facts:
+#### Facts
 * VMs (virtual machines) use the default system routes to communicate with each other within a virtual network.
 * Workloads have dedicated subscriptions containing their virtual network and workload resources creating separate blast radiuses.
 * Connectivity back on-premises is provided to both workloads by a Virtual Network Gateway in the transit virtual network.
@@ -136,7 +136,7 @@ Facts:
 * Firewalls are configured with a network interface in a private subnet fronted by an ILB (internal load balancer). The default route learned from on-premises is propagated to the route table of this subnet and forces Internet-bound traffic processed by the firewall to route back on-premises.
 * A static route is configured using a UDR (User Defined Routes) on each subnet's route table in each workload virtual network with a default route pointing to the firewall's ILB (internal load balancer) IP address. This forces all traffic to the Internet, on-premises, and other workloads to be routed to the firewall. Static routes are also configured using UDRs on the route table assigned Virtual Network Gateway subnet (GatewaySubnet) to force traffic destined for the workload virtual networks through the firewall's ILB IP address. This ensures symmetric routing.
 
-Considerations of this pattern include:
+#### Considerations
 * This pattern creates a flat network where the only option for mediation between workloads is the Network Security Groups.
 * Additional costs of the firewall running in Azure.
 * Additional costs and latency will be incurred for egressing Internet-bound traffic back on-premises.
@@ -149,7 +149,7 @@ This is one of the more common patterns for organizations using Azure.
 
 Organized are encouraged to explore [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-about) in place of this pattern due to the additional capabilities and managed nature of Virtual WAN. There are significant considerations to using [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-faq) and organizations are encouraged to consult with their Microsoft account teams or trusted Microsoft partners before moving ahead with Azure Virtual WAN.
 
-Facts:
+#### Facts
 * VMs (virtual machines) use the default system routes to communicate with each other within a virtual network.
 * Workloads have dedicated subscriptions containing their virtual network and workload resources creating separate blast radiuses.
 * Connectivity back on-premises is provided to both workloads by a Virtual Network Gateway in the transit virtual network.
@@ -160,7 +160,7 @@ Facts:
 * A static route is configured using a UDR on each subnet's route table in each workload virtual network with a default route pointing to the firewall's ILB (internal load balancer) IP address. This forces all traffic to the Internet, on-premises, and other workloads to be routed to the firewall. Static routes are also configured using UDRs on the route table assigned Virtual Network Gateway subnet (GatewaySubnet) to force traffic destined for the workload virtual networks through the firewall's ILB IP address. This ensures symmetric routing.
 * A static route is configured using a UDR on the route table assigned to the Virtual Network Gateway subnet (GatewaySubnet) to blackhole traffic destined for the firewall's public subnet.
 
-Considerations of this pattern include:
+#### Considerations
 * All north/south/east/west traffic flows through a single set of firewalls which could create a bottleneck.
 * Additional costs of the firewall running in Azure.
 
@@ -171,7 +171,7 @@ This is one of the more common patterns for organizations using Azure that have 
 
 Organized are encouraged to explore [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-about) in place of this pattern due to the additional capabilities and managed nature of Virtual WAN. There are significant considerations to using [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-faq) and organizations are encouraged to consult with their Microsoft account teams or trusted Microsoft partners before moving ahead with Azure Virtual WAN.
 
-Facts:
+#### Facts
 * VMs (virtual machines) use the default system routes to communicate with each other within a virtual network.
 * Workloads have dedicated subscriptions containing their virtual network and workload resources creating separate blast radiuses.
 * Connectivity back on-premises is provided to both workloads by a Virtual Network Gateway in the transit virtual network.
@@ -183,7 +183,7 @@ Facts:
 * A static route is configured using a UDR on each subnet's route table in each workload virtual network with a default route pointing to the north/south firewall's ILB IP address. Another set of static route are configured to force all traffic destined for on-premises or the address range dedicated to Azure to the east/west firewall's ILB IP address. This forces all traffic to the Internet, on-premises, and other workloads to be routed through the relevant firewall. Static routes are also configured using UDRs on the route table assigned Virtual Network Gateway subnet (GatewaySubnet) to force traffic destined for the workload virtual networks through the east/west firewall's ILB IP address. This ensures symmetric routing.
 * A static route is configured using a UDR on the route table assigned to the Virtual Network Gateway subnet (GatewaySubnet) to blackhole traffic destined for the north/south firewall's public subnet.
 
-Considerations of this pattern include:
+#### Considerations
 * Requires significant planning with IP space to ensure the UDRs in the workload virtual networks can remain relatively static.
 * Routing can be complex and prone to misconfiguration.
 * Additional costs of running separate firewall stacks dedicated to north/south and east/west.
