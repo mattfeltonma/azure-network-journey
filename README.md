@@ -38,7 +38,7 @@ In this pattern there is a single virtual network with a single subnet all resou
 * This pattern does not allow for connectivity back on-premises.
 
 ## Single VNet And Multiple Subnets
-![visual]](images/singlevnetmultiplesubnet.svg)
+![visual](images/singlevnetmultiplesubnet.svg)
 
 In this pattern there is a single virtual network with multiple subnets.
 
@@ -53,7 +53,7 @@ This is a common pattern for proof-of-concepts for a single workload where there
 * This pattern does not allow for connectivity back on-premises.
 
 ## Single VNet And Multiple Workloads
-![visual]](images/singlevnetmultipleworkloads.svg)
+![visual](images/singlevnetmultipleworkloads.svg)
 
 In this pattern there is a single virtual network with multiple subnets hosting multiple workloads. 
 
@@ -69,7 +69,7 @@ In this pattern there is a single virtual network with multiple subnets hosting 
 * This pattern does not allow for connectivity back on-premises.
 
 ## Single VNet And On-Premises Connectivity
-![visual]](images/singlevnetonprem.svg)
+![visual](images/singlevnetonprem.svg)
 
 In this pattern there is a single virtual network with multiple subnets and the workloads require on-premises connectivity. 
 
@@ -85,7 +85,7 @@ This is a common pattern for proof-of-concepts for a single workload where on-pr
 * All resources have direct access to the Internet through the default system route.
 
 ## Peered VNets And On-Premises Connectivity With Multiple Workloads
-![visual]](images/peervnetonprem.svg)
+![visual](images/peervnetonprem.svg)
 
 In this pattern each workload is its own virtual network and requires on-premises connectivity. 
 
@@ -103,7 +103,7 @@ In this pattern each workload is its own virtual network and requires on-premise
 * All resources have direct access to the Internet through the default system route.
 
 ## Hub And Spoke With A Flat Network And Forced Tunneling
-![visual]](images/hubspokeflatft.svg)
+![visual](images/hubspokeflatft.svg)
 
 In this pattern there is a dedicated virtual network used for on-premises connectivity which is shared with each workload that each have their own dedicated virtual network and there is a requirement to send Internet-bound traffic back on-premises for inspection, mediation, and/or logging.
 
@@ -125,7 +125,7 @@ This is a common pattern for organizations new to Azure that may have a signific
 * Additional costs and latency will be incurred for egressing Internet-bound traffic back on-premises.
 
 ## Hub And Spoke With East and West Firewall And Forced Tunneling
-![visual]](images/hubspokeewft.svg)
+![visual](images/hubspokeewft.svg)
 
 In this pattern there is a dedicated virtual network used for on-premises connectivity which is shared with each workload that each have their own dedicated virtual network and there is a requirement to send Internet-bound traffic back on-premises for inspection, mediation, filtering, and/or logging. There is also a requirement for inspection, mediation, and/or logging for traffic between on-premises and workloads and for traffic between workloads but these activities must be performed by a firewall in Azure.
 
@@ -154,7 +154,7 @@ Organizations are encouraged to explore [Azure Virtual WAN](https://docs.microso
 
 
 ## Hub And Spoke With Single Firewall For North South East West
-![visual]](images/hubspokensew.svg)
+![visual](images/hubspokensew.svg)
 
 In this pattern there is a dedicated virtual network used for on-premises connectivity which is shared with each workload that each have their own dedicated virtual network. There is requirement for Internet-bound traffic, traffic between on-premises and Azure, and traffic between workloads in Azure to be mediated, inspected, and/or centrally logged by firewalls in Azure.
 
@@ -182,7 +182,7 @@ Organizations are encouraged to explore [Azure Virtual WAN](https://docs.microso
 * Additional costs of the firewall running in Azure.
 
 ## Hub And Spoke With Dedicated North And South Firewall And Dedicated East And West Firewall
-![visual]](images/hubspokensewx2.svg)
+![visual](images/hubspokensewx2.svg)
 
 In this pattern there is a dedicated virtual network used for on-premises connectivity which is shared with each workload that each have their own dedicated virtual network. There is requirement for Internet-bound traffic, traffic between on-premises and Azure, and traffic between workloads in Azure to be mediated, inspected, and/or centrally logged by firewalls in Azure. There is a separate firewall stack for north/south traffic and another for east/west traffic.
 
