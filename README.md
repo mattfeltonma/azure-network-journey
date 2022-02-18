@@ -23,7 +23,7 @@ For detail on the traffic flows of the more complex network architectures listed
 * [Hub and Spoke With Dedicated North and South Firewall and Dedicated East and West Firewall](#hub-and-spoke-with-dedicated-north-and-south-firewall-and-dedicated-east-and-west-firewall)
 
 ## Single VNet And Single Subnet
-![visual]](images/singlevnetsinglesubnet.svg)
+![visual](images/singlevnetsinglesubnet.svg)
 
 In this pattern there is a single virtual network with a single subnet all resources are placed in. 
 
