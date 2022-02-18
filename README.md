@@ -1,4 +1,4 @@
-# (WIP) A Journey through Azure Networking
+# A Journey through Azure Networking
 
 ## Overview
 Network is a critical component of a cloud. As an organization's cloud footprint scales and matures, the more complex the networking and routing becomes. While cloud providers such as Microsoft provide a means to enumerate [effective routes](https://docs.microsoft.com/en-us/azure/virtual-network/diagnose-network-routing-problem), it becomes a chore to visualize the effective routes across multiple virtual networks and subnets.
@@ -17,174 +17,196 @@ For detail on the traffic flows of the more complex network architectures listed
 * [Single Virtual Network and Multiple Workloads](#single-vnet-and-multiple-workloads)
 * [Single Virtaul Network and On-Premises Connectivity](#single-vnet-and-on-premises-connectivity)
 * [Peered Virtual Networks and On-Premises Connectivity and Multiple Workloads](#peered-vnets-and-on-premises-connectivity-with-multiple-workloads)
-* [Hub and Spoke With a Flat Network](#hub-and-spoke-with-a-flat-network)
 * [Hub and Spoke With a Flat Network and Forced Tunneling](#hub-and-spoke-with-a-flat-network-and-forced-tunneling)
 * [Hub and Spoke With East and West Firewall and Forced Tunneling](#hub-and-spoke-with-east-and-west-firewall-and-forced-tunneling)
 * [Hub and Spoke With Single Firewall For North South East West](#hub-and-spoke-with-single-firewall-for-north-south-east-west)
 * [Hub and Spoke With Dedicated North and South Firewall and Dedicated East and West Firewall](#hub-and-spoke-with-dedicated-north-and-south-firewall-and-dedicated-east-and-west-firewall)
 
 ## Single VNet And Single Subnet
+![visual]](images/singlevnetsinglesubnet.svg)
+
 In this pattern there is a single virtual network with a single subnet all resources are placed in. 
 
-#### Facts
-* VMs (virtual machines) use the default system routes to communicate with each other.
+#### Benefits
+* All virtual machines in the same virtual network can communicate with each other using default system routes.
+* Virtual machine communication within the subnet can be mediated a network security group.
 
 #### Considerations
-
 * Scaling this pattern can be a significant problem because subnets cannot be resized once network interfaces are associated with them.
-* Mediation of traffic can be done with Network Security Groups, but it can be complex to manage the rules and could lead to mistakes.
+* Managing network security groups for intra-subnet traffic can be prone to misconfigurations.
 * All resources have direct access to the Internet through the default system route.
 * This pattern does not allow for connectivity back on-premises.
 
 ## Single VNet And Multiple Subnets
+![visual]](images/singlevnetmultiplesubnet.svg)
+
 In this pattern there is a single virtual network with multiple subnets.
 
-This is a common pattern for proof-of-concepts where there is no requirement for on-premises connectivity.
+This is a common pattern for proof-of-concepts for a single workload where there is no requirement for on-premises connectivity.
 
-#### Facts
-* Individual subnets can be assigned separate Network Security Groups controlling inbound and outbound traffic for each tier of the workload.
-* VMs (virtual machines) use the default system routes to communicate with each other.
+#### Benefits
+* All virtual machines in the same virtual network can communicate with each other using default system routes.
+* Virtual machine communication between subnets can be mediated with network security groups.
 
 #### Considerations
 * All resources have direct access to the Internet through the default system route.
 * This pattern does not allow for connectivity back on-premises.
 
 ## Single VNet And Multiple Workloads
+![visual]](images/singlevnetmultipleworkloads.svg)
+
 In this pattern there is a single virtual network with multiple subnets hosting multiple workloads. 
 
-#### Facts
-* Individual subnets can be assigned separate Network Security Groups controlling inbound and outbound traffic for each tier of the workload and between workloads.
-* VMs (virtual machines) use the default system routes to communicate with each other which includes cross workload.
+#### Benefits
+* Workload-to-workload communication can be mediated with network security groups.
+* All virtual machines in the same virtual network can communicate with each other using default system routes.
+* Virtual machine communication between subnets can be mediated with network security groups.
 
 #### Considerations
-* All resources will need to be in the same Azure subscription creating a single blast radius for both workloads.
-* There is no simple way to restrict Azure RBAC permissions to management of a specific subnet(s) in the situation where the workloads are managed by different teams.
+* Resources for both workloads that require integration with the virtual network must be in the same subscription creating a single blast radius.
+* It is not possible to restrict RBAC permissions on a per subnet basis within the same virtual network.
 * All resources have direct access to the Internet through the default system route.
 * This pattern does not allow for connectivity back on-premises.
 
 ## Single VNet And On-Premises Connectivity
+![visual]](images/singlevnetonprem.svg)
+
 In this pattern there is a single virtual network with multiple subnets and the workloads require on-premises connectivity. 
 
-This is a common pattern for proof-of-concepts where on-premises connectivity is required.
+This is a common pattern for proof-of-concepts for a single workload where on-premises connectivity is required.
 
-#### Facts
-* VMs (virtual machines) use the default system routes to communicate with each other.
-* Connectivity back on-premises is provided by a Virtual Network Gateway with either a VPN or ExpressRoute connection.
-* Routes are exchanged between on-premises network equipment and the Virtual Network Gateway using BGP. 
+### Benefits
+* On-premises connectivity is provided by a Virtual Network Gateway configured with either a site-to-site VPN or ExpressRoute connection. Routes can be exchanged between on-premises and Azure using BGP.
+* All virtual machines in the same virtual network can communicate with each other using default system routes.
+* Virtual machine communication between subnets can be mediated with network security groups.
 
 #### Considerations
-* The Virtual Network Gateway resource is in the same subscription as the workload. This creates a single blast radius which includes both on-premises connectivity and workload resources.
+* The workload and on-premises connectivity resources must be within the same subscription.
 * All resources have direct access to the Internet through the default system route.
 
 ## Peered VNets And On-Premises Connectivity With Multiple Workloads
+![visual]](images/peervnetonprem.svg)
+
 In this pattern each workload is its own virtual network and requires on-premises connectivity. 
 
-#### Facts
-* VMs (virtual machines) use the default system routes to communicate with each other which includes cross workload.
-* Workloads have dedicated subscriptions containing their virtual network and workload resources creating separate blast radiuses.
-* Connectivity back on-premises is provided to both workloads by a Virtual Network Gateway in one of the virtual networks.
-* Peerings between the virtual networks are configured [gateway transit](https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-peering-gateway-transit) allowing the workloads to share the on-premises connectivity provided by the Virtual Network Gateway because the learned routes are propagated into the peered virtual network.
-* Individual subnets can be assigned separate Network Security Groups controlling inbound and outbound traffic for each tier of the workload and between workloads.
+#### Benefts
+* On-premises connectivity is provided by a Virtual Network Gateway configured with either a site-to-site VPN or ExpressRoute connection. Routes can be exchanged between on-premises and Azure using BGP.
+* On-premises connectivity for the peered virtual network is provided by [gateway transit](https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-peering-gateway-transit).
+* Workload resources can be placed in separate subscriptions which creates a smaller blast radius.
+* All virtual machines in the separate peered virtual networks can communicate with each other using default system routes.
+* Virtual machine communication between subnets in the separate peered virtual networks can be mediated with network security groups.
+* All virtual machines in the same virtual network can communicate with each other using default system routes.
+* Virtual machine communication between subnets in the same virtual network can be mediated with network security groups.
 
 #### Considerations
-* The Virtual Network Gateway resource is in the same subscription as the workload. This creates a single blast radius for on-premises connectivity for both workloads.
-* All resources have direct access to the Internet through the default system route.
-
-## Hub And Spoke With A Flat Network
-In this pattern there is a dedicated virtual network used for on-premises connectivity which is shared with each workload that each have their own dedicated virtual network.
-
-#### Facts
-* VMs (virtual machines) use the default system routes to communicate with each other within a virtual network.
-* Workloads have dedicated subscriptions containing their virtual network and workload resources creating separate blast radiuses.
-* Connectivity back on-premises is provided to both workloads by a Virtual Network Gateway in the transit virtual network.
-* Peerings between the transit virtual networks and workload virtual networks is configured with [gateway transit](https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-peering-gateway-transit) allowing the workloads to share the on-premises connectivity provided by the Virtual Network Gateway because the learned routes are propagated into each workload virtual network.
-* VMs use routes learned from the Virtual Network Gateway to communicate cross workload.
-* Individual subnets can be assigned separate Network Security Groups controlling inbound and outbound traffic for each tier of the workload and between workloads.
-
-#### Considerations
-* This pattern creates a flat network where the only option for mediation between workloads is the Network Security Groups.
+* The workload and on-premises connectivity resources must be within the same subscription.
 * All resources have direct access to the Internet through the default system route.
 
 ## Hub And Spoke With A Flat Network And Forced Tunneling
-In this pattern there is a dedicated virtual network used for on-premises connectivity which is shared with each workload that each have their own dedicated virtual network and there is a requirement to send Internet-bound traffic back on-premises for inspection, mediation, filtering, and/or logging.
+![visual]](images/hubspokeflatft.svg)
 
-This is a common pattern for organizations new to Azure that may have a significant capital investment in security appliances on-premises that are not yet fully depreciated and are comfortable mediating network traffic between workloads using Network Security Groups.
+In this pattern there is a dedicated virtual network used for on-premises connectivity which is shared with each workload that each have their own dedicated virtual network and there is a requirement to send Internet-bound traffic back on-premises for inspection, mediation, and/or logging.
 
-#### Facts
-* VMs (virtual machines) use the default system routes to communicate with each other within a virtual network.
+This is a common pattern for organizations new to Azure that may have a significant capital investment in security appliances on-premises that are not yet fully depreciated and are comfortable mediating network traffic between workloads using network security groups.
+
+#### Benefits
+* All resources are forced to route Internet-bound traffic back on-premises where it can be mediated, inspected, and/or logged.
 * Workloads have dedicated subscriptions containing their virtual network and workload resources creating separate blast radiuses.
-* Connectivity back on-premises is provided to both workloads by a Virtual Network Gateway in the transit virtual network.
-* Peerings between the transit virtual networks and workload virtual networks is configured with [gateway transit](https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-peering-gateway-transit) allowing the workloads to share the on-premises connectivity provided by the Virtual Network Gateway because the learned routes are propagated into each workload virtual network.
-* VMs use routes learned from the Virtual Network Gateway to communicate cross workload.
-* Individual subnets can be assigned separate Network Security Groups controlling inbound and outbound traffic for each tier of the workload and between workloads.
-* A default route learned from on-premises is propagated to each workload virtual network invalidate the default system route to the Internet forcing Internet-bound traffic back on-premises.
+* The on-premises connectivity resources are in a dedicated subscription creating a separate blast radius.
+* All virtual machines in the separate peered virtual networks can communicate with each other through the Virtual Network Gateway (VPN) or MSEE (Microsoft Enterprise Edge) router (ExpressRoute).
+* On-premises connectivity is provided by a Virtual Network Gateway configured with either a site-to-site VPN or ExpressRoute connection. Routes can be exchanged between on-premises and Azure using BGP.
+* On-premises connectivity for the peered virtual network is provided by [gateway transit](https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-peering-gateway-transit).
+* Virtual machine communication between subnets in the separate peered virtual networks can be mediated with network security groups.
+* All virtual machines in the same virtual network can communicate with each other using default system routes.
+* Virtual machine communication between subnets in the same virtual network can be mediated with network security groups.
 
 #### Considerations
-* This pattern creates a flat network where the only option for mediation between workloads is the Network Security Groups.
+* This pattern creates a flat network where only network security groups can be used to mediate traffic between workloads.
 * Additional costs and latency will be incurred for egressing Internet-bound traffic back on-premises.
 
 ## Hub And Spoke With East and West Firewall And Forced Tunneling
+![visual]](images/hubspokeewft.svg)
+
 In this pattern there is a dedicated virtual network used for on-premises connectivity which is shared with each workload that each have their own dedicated virtual network and there is a requirement to send Internet-bound traffic back on-premises for inspection, mediation, filtering, and/or logging. There is also a requirement for inspection, mediation, and/or logging for traffic between on-premises and workloads and for traffic between workloads but these activities must be performed by a firewall in Azure.
+
+This pattern also uses a dedicated virtual network in a dedicated subscription for shared infrastructure services. These services can include Microsoft Active Directory, patching or update services, or logging services.
 
 This is a common pattern for organizations new to Azure that may have a significant capital investment in security appliances on-premises that are not yet fully depreciated but want mediation, inspection, and/or centralized logging between workloads which is provided by a firewall in Azure.
 
-#### Facts
-* VMs (virtual machines) use the default system routes to communicate with each other within a virtual network.
+Organizations are encouraged to explore [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-about) in place of this pattern due to the additional capabilities and managed nature of Virtual WAN. There are significant considerations to using [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-faq) and organizations are encouraged to consult with their Microsoft account teams or trusted Microsoft partners before moving ahead with Azure Virtual WAN.
+
+#### Benefits
+* The firewall in Azure receives all traffic from workloads destined for on-premises, other workloads, or the Internet and can be used to centrally mediate, inspect, and/or log traffic.
+* All Internet-bound traffic is forced to route back on-premises where it can be mediated, inspected, and/or logged.
+* Shared infrastructure services added to Azure reduce the for workloads to go back on-premises for these services reducing network costs, latency, and mitigate impact of lost connectivity to on-premises.
+* Shared infrastructure services have a dedicated subscription containing its own virtual network and resources creating a separate blast radius.
 * Workloads have dedicated subscriptions containing their virtual network and workload resources creating separate blast radiuses.
-* Connectivity back on-premises is provided to both workloads by a Virtual Network Gateway in the transit virtual network.
-* Peerings between the transit virtual networks and workload virtual networks are not configured for [gateway transit](https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-peering-gateway-transit). Virtual networks do not learn on-premises routes or the routes of other workload virtual networks.
-* Firewalls are configured with a network interface in a private subnet fronted by an ILB (internal load balancer). The default route learned from on-premises is propagated to the route table of this subnet and forces Internet-bound traffic processed by the firewall to route back on-premises.
-* A static route is configured using a UDR (User Defined Routes) on each subnet's route table in each workload virtual network with a default route pointing to the firewall's ILB (internal load balancer) IP address. This forces all traffic to the Internet, on-premises, and other workloads to be routed to the firewall. Static routes are also configured using UDRs on the route table assigned Virtual Network Gateway subnet (GatewaySubnet) to force traffic destined for the workload virtual networks through the firewall's ILB IP address. This ensures symmetric routing.
+* The on-premises connectivity and network security appliances resources are in a dedicated subscription creating a separate blast radius.
+* All virtual machines in the separate peered virtual networks can communicate with each other through the Virtual Network Gateway (VPN) or MSEE (Microsoft Enterprise Edge) router (ExpressRoute).
+* On-premises connectivity is provided by a Virtual Network Gateway configured with either a site-to-site VPN or ExpressRoute connection. Routes can be exchanged between on-premises and Azure using BGP.
+* Virtual machine communication between subnets in the separate peered virtual networks can be mediated with network security groups.
+* All virtual machines in the same virtual network can communicate with each other using default system routes.
+* Virtual machine communication between subnets in the same virtual network can be mediated with network security groups.
 
 #### Considerations
-* This pattern creates a flat network where the only option for mediation between workloads is the Network Security Groups.
 * Additional costs of the firewall running in Azure.
 * Additional costs and latency will be incurred for egressing Internet-bound traffic back on-premises.
 
 
 ## Hub And Spoke With Single Firewall For North South East West
+![visual]](images/hubspokensew.svg)
+
 In this pattern there is a dedicated virtual network used for on-premises connectivity which is shared with each workload that each have their own dedicated virtual network. There is requirement for Internet-bound traffic, traffic between on-premises and Azure, and traffic between workloads in Azure to be mediated, inspected, and/or centrally logged by firewalls in Azure.
+
+This pattern also uses a dedicated virtual network in a dedicated subscription for shared infrastructure services. These services can include Microsoft Active Directory, patching or update services, or logging services.
 
 This is one of the more common patterns for organizations using Azure.
 
-Organized are encouraged to explore [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-about) in place of this pattern due to the additional capabilities and managed nature of Virtual WAN. There are significant considerations to using [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-faq) and organizations are encouraged to consult with their Microsoft account teams or trusted Microsoft partners before moving ahead with Azure Virtual WAN.
+Organizations are encouraged to explore [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-about) in place of this pattern due to the additional capabilities and managed nature of Virtual WAN. There are significant considerations to using [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-faq) and organizations are encouraged to consult with their Microsoft account teams or trusted Microsoft partners before moving ahead with Azure Virtual WAN.
 
-#### Facts
-* VMs (virtual machines) use the default system routes to communicate with each other within a virtual network.
+#### Benefits
+* The firewall in Azure receives all traffic from workloads destined for on-premises, other workloads, or the Internet and can be used to centrally mediate, inspect, and/or log traffic.
+* All Internet-bound traffic is egressed directly out of Azure reducing networking complexity.
+* Shared infrastructure services added to Azure reduce the for workloads to go back on-premises for these services reducing network costs, latency, and mitigate impact of lost connectivity to on-premises.
+* Shared infrastructure services have a dedicated subscription containing its own virtual network and resources creating a separate blast radius.
 * Workloads have dedicated subscriptions containing their virtual network and workload resources creating separate blast radiuses.
-* Connectivity back on-premises is provided to both workloads by a Virtual Network Gateway in the transit virtual network.
-* Peerings between the transit virtual networks and workload virtual networks are not configured for [gateway transit](https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-peering-gateway-transit). Virtual networks do not learn on-premises routes or the routes of other workload virtual networks.
-* Firewalls are configured with a network interface in a private subnet fronted by an ILB (internal load balancer) in addition to an interface in a public subnet fronted by a ELB (external load balancer).
-* Static routes are configured using UDRs (User Defined Routes) on the firewall's public subnet to blackhole traffic destined for the firewall's private subnet or any workload virtual network. The route table is also configured with BGP propagation disabled to ensure it does not learn about the routes from on-premises. This allows the organization to control this traffic within the firewall.
-* Static routes are configured using UDRs on the firewall's private subnet to blackhole traffic destined for the firewall's public subnet and to direct any Internet-bound traffic to the firewall's ILB IP address. This allows the organization to control this traffic within the firewall.
-* A static route is configured using a UDR on each subnet's route table in each workload virtual network with a default route pointing to the firewall's ILB (internal load balancer) IP address. This forces all traffic to the Internet, on-premises, and other workloads to be routed to the firewall. Static routes are also configured using UDRs on the route table assigned Virtual Network Gateway subnet (GatewaySubnet) to force traffic destined for the workload virtual networks through the firewall's ILB IP address. This ensures symmetric routing.
-* A static route is configured using a UDR on the route table assigned to the Virtual Network Gateway subnet (GatewaySubnet) to blackhole traffic destined for the firewall's public subnet.
+* The on-premises connectivity and network security appliances resources are in a dedicated subscription creating a separate blast radius.
+* All virtual machines in the separate peered virtual networks can communicate with each other through the Virtual Network Gateway (VPN) or MSEE (Microsoft Enterprise Edge) router (ExpressRoute).
+* On-premises connectivity is provided by a Virtual Network Gateway configured with either a site-to-site VPN or ExpressRoute connection. Routes can be exchanged between on-premises and Azure using BGP.
+* Virtual machine communication between subnets in the separate peered virtual networks can be mediated with network security groups.
+* All virtual machines in the same virtual network can communicate with each other using default system routes.
+* Virtual machine communication between subnets in the same virtual network can be mediated with network security groups.
 
 #### Considerations
 * All north/south/east/west traffic flows through a single set of firewalls which could create a bottleneck.
 * Additional costs of the firewall running in Azure.
 
 ## Hub And Spoke With Dedicated North And South Firewall And Dedicated East And West Firewall
+![visual]](images/hubspokensewx2.svg)
+
 In this pattern there is a dedicated virtual network used for on-premises connectivity which is shared with each workload that each have their own dedicated virtual network. There is requirement for Internet-bound traffic, traffic between on-premises and Azure, and traffic between workloads in Azure to be mediated, inspected, and/or centrally logged by firewalls in Azure. There is a separate firewall stack for north/south traffic and another for east/west traffic.
+
+This pattern also uses a dedicated virtual network in a dedicated subscription for shared infrastructure services. These services can include Microsoft Active Directory, patching or update services, or logging services.
 
 This is one of the more common patterns for organizations using Azure that have a significant amount of internal and externallly facing workloads and would like to mitigate the risk of a bottleneck.
 
 Organized are encouraged to explore [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-about) in place of this pattern due to the additional capabilities and managed nature of Virtual WAN. There are significant considerations to using [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-faq) and organizations are encouraged to consult with their Microsoft account teams or trusted Microsoft partners before moving ahead with Azure Virtual WAN.
 
-#### Facts
-* VMs (virtual machines) use the default system routes to communicate with each other within a virtual network.
+#### Benefits
+* North/south and east/west traffic is distributed to two separate firewall stacks reducing the risk of a bottleneck.
+* All Internet-bound traffic is egressed directly out of Azure reducing networking complexity.
+* Shared infrastructure services added to Azure reduce the for workloads to go back on-premises for these services reducing network costs, latency, and mitigate impact of lost connectivity to on-premises.
+* Shared infrastructure services have a dedicated subscription containing its own virtual network and resources creating a separate blast radius.
 * Workloads have dedicated subscriptions containing their virtual network and workload resources creating separate blast radiuses.
-* Connectivity back on-premises is provided to both workloads by a Virtual Network Gateway in the transit virtual network.
-* Peerings between the transit virtual networks and workload virtual networks are not configured for [gateway transit](https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-peering-gateway-transit). Virtual networks do not learn on-premises routes or the routes of other workload virtual networks.
-* The north/south firewalls are configured with a network interface in a private subnet fronted by an ILB (internal load balancer) in addition to an interface in a public subnet fronted by a ELB (external load balancer).
-* The east/west firewalls are configured with a network interface in a private subnet fronted by an ILB.
-* Static routes are configured using UDRs (User Defined Routes) on the north/south firewall's public subnet to blackhole traffic destined for both the north/south and east/west firewall's private subnets or any workload virtual network. The route table is also configured with BGP propagation disabled to ensure it does not learn about the routes from on-premises. This allows the organization to control this traffic within the firewall.
-* Static routes are configured using UDRs on the both the north/south and east/west firewall's private subnet to blackhole traffic destined for the firewall's public subnet and to direct any Internet-bound traffic to the north/south firewall's ILB IP address. This allows the organization to control this traffic within the firewall.
-* A static route is configured using a UDR on each subnet's route table in each workload virtual network with a default route pointing to the north/south firewall's ILB IP address. Another set of static route are configured to force all traffic destined for on-premises or the address range dedicated to Azure to the east/west firewall's ILB IP address. This forces all traffic to the Internet, on-premises, and other workloads to be routed through the relevant firewall. Static routes are also configured using UDRs on the route table assigned Virtual Network Gateway subnet (GatewaySubnet) to force traffic destined for the workload virtual networks through the east/west firewall's ILB IP address. This ensures symmetric routing.
-* A static route is configured using a UDR on the route table assigned to the Virtual Network Gateway subnet (GatewaySubnet) to blackhole traffic destined for the north/south firewall's public subnet.
+* The on-premises connectivity and network security appliances resources are in a dedicated subscription creating a separate blast radius.
+* All virtual machines in the separate peered virtual networks can communicate with each other through the Virtual Network Gateway (VPN) or MSEE (Microsoft Enterprise Edge) router (ExpressRoute).
+* On-premises connectivity is provided by a Virtual Network Gateway configured with either a site-to-site VPN or ExpressRoute connection. Routes can be exchanged between on-premises and Azure using BGP.
+* Virtual machine communication between subnets in the separate peered virtual networks can be mediated with network security groups.
+* All virtual machines in the same virtual network can communicate with each other using default system routes.
+* Virtual machine communication between subnets in the same virtual network can be mediated with network security groups.
 
 #### Considerations
-* Requires significant planning with IP space to ensure the UDRs in the workload virtual networks can remain relatively static.
-* Routing can be complex and prone to misconfiguration.
-* Additional costs of running separate firewall stacks dedicated to north/south and east/west.
+* Carving out IP address blocks for Azure must be well planned to avoid frequent changes to static routes.
+* Routing can become complex.
+* Additional costs of running multiple sets of firewalls.
 
