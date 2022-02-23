@@ -1,4 +1,4 @@
-# (Work in progress) A Journey through Azure Networking
+# A Journey through Azure Networking
 
 ## Overview
 Organizations often begin the cloud journey with simple requirements. These requirements grow as an organization scales, matures, and migrates critical data and workloads. As more requirements are introduced, the architecture of the an organization's cloud deployment becomes more complex.
@@ -238,6 +238,7 @@ The pattern is complex and should only be used where there is a hard requirement
 * Virtual machine communication between subnets in the same virtual network can be mediated with network security groups.
 
 #### Considerations
+* Snowflake pattern that introduces additional complexity for limited security benefits for most organizations.
 * Carving out IP address blocks for Azure must be well planned to avoid frequent changes to static routes.
 * Routing can become complex.
 * Additional costs of running multiple sets of firewalls.
