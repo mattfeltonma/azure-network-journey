@@ -51,11 +51,11 @@ For detail on the traffic flows of the more complex network architectures listed
 
 In this pattern there is a single virtual network with a single subnet all resources are placed in. 
 
-#*Benefits*
+*Benefits*
 * All virtual machines in the same virtual network can communicate with each other using default system routes.
 * Virtual machine communication within the subnet can be mediated a network security group.
 
-#*Considerations*
+*Considerations*
 * Scaling this pattern can be a significant problem because subnets cannot be resized once network interfaces are associated with them.
 * Managing network security groups for intra-subnet traffic can be prone to misconfigurations.
 * All resources have direct access to the Internet through the default system route.
