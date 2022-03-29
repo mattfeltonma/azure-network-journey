@@ -372,7 +372,7 @@ It is not appropriate for organizations that require centralized mediation and/o
 
 This pattern is **not** recommended for production because it uses the public preview feature of [routing policies](https://docs.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub#gated-public-preview). 
 
-In this pattern, north and south traffic is automatically routed through Azure Firewall or a [compatible NVA (network virtual appliance)](https://docs.microsoft.com/en-us/azure/virtual-wan/about-nva-hub) is deployed into each VWAN hub using the [Secure Hub feature](https://docs.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub). Traffic can be centrally mediated and/or inspected.
+In this pattern, north and south traffic is automatically routed through Azure Firewall or a [compatible NVA (network virtual appliance)](https://docs.microsoft.com/en-us/azure/virtual-wan/about-nva-hub) that is deployed into each VWAN hub using the [Secure Hub feature](https://docs.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub). Traffic can be centrally mediated and/or inspected.
 
 #### Benefits
 * Intra-hub virtual networks can communicate with each other by default.
@@ -396,7 +396,7 @@ In this pattern, north and south traffic is automatically routed through Azure F
 
 This pattern is **not** recommended for production because it uses the public preview feature of [routing policies](https://docs.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub#gated-public-preview). 
 
-In this pattern, north and south traffic is automatically routed through Azure Firewall or a [compatible NVA (network virtual appliance)](https://docs.microsoft.com/en-us/azure/virtual-wan/about-nva-hub) is deployed into each VWAN hub using the [Secure Hub feature](https://docs.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub). Additionally, east and west traffic intra-hub is also automatically routed through the appliance in the hub. Traffic can be centrally mediated and/or inspected.
+In this pattern, north and south traffic is automatically routed through Azure Firewall or a [compatible NVA (network virtual appliance)](https://docs.microsoft.com/en-us/azure/virtual-wan/about-nva-hub) that is deployed into each VWAN hub using the [Secure Hub feature](https://docs.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub). Additionally, east and west traffic intra-hub is also automatically routed through the appliance in the hub. Traffic can be centrally mediated and/or inspected.
 
 The major drawback of this pattern is inter-hub traffic between virtual networks or branches connected to different hubs in separate regions is not possible. As of March 2022 this a [VWAN limitation](https://docs.microsoft.com/en-us/azure/firewall-manager/overview#known-issues).
 
