@@ -45,69 +45,70 @@ For detail on the traffic flows of the more complex network architectures listed
 * [Multiple region VWAN Secure Hubs with multiple branches connected to multiple hubs for redundancy and north south east west firewall using custom routing - option 1](#vwan---multiple-region-vwan-secure-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy-and-north-south-east-west-firewall-using-custom-routing---option-1)
 * [Multiple region VWAN Secure Hubs with multiple branches connected to multiple hubs for redundancy and north south east west firewall using custom routing - option 2]((#vwan---multiple-region-vwan-secure-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy-and-north-south-east-west-firewall-using-custom-routing---option-2))
 
-## Single VNet And Single Subnet
+## Patterns
+### Single VNet And Single Subnet
 ![visual](images/singlevnetsinglesubnet.svg)
 
 In this pattern there is a single virtual network with a single subnet all resources are placed in. 
 
-#### Benefits
+#*Benefits*
 * All virtual machines in the same virtual network can communicate with each other using default system routes.
 * Virtual machine communication within the subnet can be mediated a network security group.
 
-#### Considerations
+#*Considerations*
 * Scaling this pattern can be a significant problem because subnets cannot be resized once network interfaces are associated with them.
 * Managing network security groups for intra-subnet traffic can be prone to misconfigurations.
 * All resources have direct access to the Internet through the default system route.
 * This pattern does not allow for connectivity back on-premises.
 
-## Single VNet And Multiple Subnets
+### Single VNet And Multiple Subnets
 ![visual](images/singlevnetmultiplesubnet.svg)
 
 In this pattern there is a single virtual network with multiple subnets.
 
 This is a common pattern for proof-of-concepts for a single workload where there is no requirement for on-premises connectivity.
 
-#### Benefits
+*Benefits*
 * All virtual machines in the same virtual network can communicate with each other using default system routes.
 * Virtual machine communication between subnets can be mediated with network security groups.
 
-#### Considerations
+*Considerations*
 * All resources have direct access to the Internet through the default system route.
 * This pattern does not allow for connectivity back on-premises.
 
-## Single VNet And Multiple Workloads
+### Single VNet And Multiple Workloads
 ![visual](images/singlevnetmultipleworkloads.svg)
 
 In this pattern there is a single virtual network with multiple subnets hosting multiple workloads. 
 
-#### Benefits
+*Benefits*
 * Workload-to-workload communication can be mediated with network security groups.
 * All virtual machines in the same virtual network can communicate with each other using default system routes.
 * Virtual machine communication between subnets can be mediated with network security groups.
 
-#### Considerations
+*Considerations*
 * Resources for both workloads that require integration with the virtual network must be in the same subscription creating a single blast radius.
 * It is not possible to restrict RBAC permissions on a per subnet basis within the same virtual network.
 * All resources have direct access to the Internet through the default system route.
 * This pattern does not allow for connectivity back on-premises.
 
-## Single VNet And On-Premises Connectivity
+### Single VNet And On-Premises Connectivity
 ![visual](images/singlevnetonprem.svg)
 
 In this pattern there is a single virtual network with multiple subnets and the workloads require on-premises connectivity. 
 
 This is a common pattern for proof-of-concepts for a single workload where on-premises connectivity is required.
 
-### Benefits
+*Benefits*
 * On-premises connectivity is provided by a Virtual Network Gateway configured with either a site-to-site VPN or ExpressRoute connection. Routes can be exchanged between on-premises and Azure using BGP.
 * All virtual machines in the same virtual network can communicate with each other using default system routes.
 * Virtual machine communication between subnets can be mediated with network security groups.
 
-#### Considerations
+*Considerations*
 * The workload and on-premises connectivity resources must be within the same subscription.
 * All resources have direct access to the Internet through the default system route.
 
-## Peered VNets And On-Premises Connectivity With Multiple Workloads
+### Peered VNets And On-Premises Connectivity With Multiple Workloads
 ![visual](images/peervnetonprem.svg)
 
 In this pattern each workload is its own virtual network and requires on-premises connectivity. 
@@ -121,18 +122,18 @@ In this pattern each workload is its own virtual network and requires on-premise
 * All virtual machines in the same virtual network can communicate with each other using default system routes.
 * Virtual machine communication between subnets in the same virtual network can be mediated with network security groups.
 
-#### Considerations
+*Considerations*
 * The workload and on-premises connectivity resources must be within the same subscription.
 * All resources have direct access to the Internet through the default system route.
 
-## Hub And Spoke With A Flat Network And Forced Tunneling
+### Hub And Spoke With A Flat Network And Forced Tunneling
 ![visual](images/hubspokeflatft.svg)
 
 In this pattern there is a dedicated virtual network used for on-premises connectivity which is shared with each workload that each have their own dedicated virtual network and there is a requirement to send Internet-bound traffic back on-premises for inspection, mediation, and/or logging.
 
 This is a common pattern for organizations new to Azure that may have a significant capital investment in security appliances on-premises that are not yet fully depreciated and are comfortable mediating network traffic between workloads using network security groups.
 
-#### Benefits
+*Benefits*
 * All resources are forced to route Internet-bound traffic back on-premises where it can be mediated, inspected, and/or logged.
 * Workloads have dedicated subscriptions containing their virtual network and workload resources creating separate blast radiuses.
 * The on-premises connectivity resources are in a dedicated subscription creating a separate blast radius.
@@ -143,11 +144,11 @@ This is a common pattern for organizations new to Azure that may have a signific
 * All virtual machines in the same virtual network can communicate with each other using default system routes.
 * Virtual machine communication between subnets in the same virtual network can be mediated with network security groups.
 
-#### Considerations
+*Considerations*
 * This pattern creates a flat network where only network security groups can be used to mediate traffic between workloads.
 * Additional costs and latency will be incurred for egressing Internet-bound traffic back on-premises.
 
-## Hub And Spoke With East and West Firewall And Forced Tunneling
+### Hub And Spoke With East and West Firewall And Forced Tunneling
 ![visual](images/hubspokeewft.svg)
 
 In this pattern there is a dedicated virtual network used for on-premises connectivity which is shared with each workload that each have their own dedicated virtual network and there is a requirement to send Internet-bound traffic back on-premises for inspection, mediation, filtering, and/or logging. There is also a requirement for inspection, mediation, and/or logging for traffic between on-premises and workloads and for traffic between workloads but these activities must be performed by a firewall in Azure.
@@ -156,7 +157,7 @@ This pattern also uses a dedicated virtual network in a dedicated subscription f
 
 This is a common pattern for organizations new to Azure that may have a significant capital investment in security appliances on-premises that are not yet fully depreciated but want mediation, inspection, and/or centralized logging between workloads which is provided by a firewall in Azure.
 
-#### Benefits
+*Benefits*
 * The firewall in Azure receives all traffic from workloads destined for on-premises, other workloads, or the Internet and can be used to centrally mediate, inspect, and/or log traffic.
 * All Internet-bound traffic is forced to route back on-premises where it can be mediated, inspected, and/or logged.
 * Shared infrastructure services added to Azure reduce the for workloads to go back on-premises for these services reducing network costs, latency, and mitigate impact of lost connectivity to on-premises.
@@ -169,12 +170,12 @@ This is a common pattern for organizations new to Azure that may have a signific
 * All virtual machines in the same virtual network can communicate with each other using default system routes.
 * Virtual machine communication between subnets in the same virtual network can be mediated with network security groups.
 
-#### Considerations
+*Considerations*
 * Additional costs of the firewall running in Azure.
 * Additional costs and latency will be incurred for egressing Internet-bound traffic back on-premises.
 
 
-## Hub And Spoke With Single Firewall For North South East West
+### Hub And Spoke With Single Firewall For North South East West
 ![visual](images/hubspokensew.svg)
 
 In this pattern there is a dedicated virtual network used for on-premises connectivity which is shared with each workload that each have their own dedicated virtual network. There is requirement for Internet-bound traffic, traffic between on-premises and Azure, and traffic between workloads in Azure to be mediated, inspected, and/or centrally logged by firewalls in Azure.
@@ -183,7 +184,7 @@ This pattern also uses a dedicated virtual network in a dedicated subscription f
 
 This is one of the more common patterns for organizations using Azure.
 
-#### Benefits
+*Benefits*
 * Traffic between the interface in the public subnet and private subnet is blackholed to help create a DMZ-like design.
 * The firewall in Azure receives all traffic from workloads destined for on-premises, other workloads, or the Internet and can be used to centrally mediate, inspect, and/or log traffic.
 * All Internet-bound traffic is egressed directly out of Azure reducing networking complexity.
@@ -197,11 +198,11 @@ This is one of the more common patterns for organizations using Azure.
 * All virtual machines in the same virtual network can communicate with each other using default system routes.
 * Virtual machine communication between subnets in the same virtual network can be mediated with network security groups.
 
-#### Considerations
+*Considerations*
 * All north/south/east/west traffic flows through a single set of firewalls which could create a bottleneck.
 * Additional costs of the firewall running in Azure.
 
-## Hub And Spoke With Dedicated North And South Firewall And Dedicated East And West Firewall
+### Hub And Spoke With Dedicated North And South Firewall And Dedicated East And West Firewall
 ![visual](images/hubspokensewx2.svg)
 
 In this pattern there is a dedicated virtual network used for on-premises and Internet connectivity which is shared with each workload that each have their own dedicated virtual network. There is requirement for Internet-bound traffic, traffic between on-premises and Azure, and traffic between workloads in Azure to be mediated, inspected, and/or centrally logged by firewalls in Azure. There is a separate firewall stack for north/south traffic and another for east/west traffic.
@@ -210,7 +211,7 @@ This pattern also uses a dedicated virtual network in a dedicated subscription f
 
 This is one of the more common patterns for organizations using Azure that have a significant amount of internal and externallly facing workloads and would like to mitigate the risk of a bottleneck.
 
-#### Benefits
+*Benefits*
 * North/south and east/west traffic is distributed to two separate firewall stacks reducing the risk of a bottleneck.
 * Traffic between the north/south public subnet and private subnet interfaces is blackholed creating a DMZ-like configuration.
 * Traffic between the north/south public and private interfaces is blackholed to create a DMZ-like configuration.
@@ -225,12 +226,12 @@ This is one of the more common patterns for organizations using Azure that have 
 * All virtual machines in the same virtual network can communicate with each other using default system routes.
 * Virtual machine communication between subnets in the same virtual network can be mediated with network security groups.
 
-#### Considerations
+*Considerations*
 * Carving out IP address blocks for Azure must be well planned to avoid frequent changes to static routes.
 * Routing can become complex.
 * Additional costs of running multiple sets of firewalls.
 
-## Hub And Spoke With Dedicated North And South Firewall And Dedicated East And West Firewall In Seperate Virtual Networks
+### Hub And Spoke With Dedicated North And South Firewall And Dedicated East And West Firewall In Seperate Virtual Networks
 ![visual](images/hubspokensewx2-vnets.svg)
 
 In this pattern there is a dedicated virtual network used for on-premises connectivity (Internal Virtual Network) and a second dedicated virtual network for Internet connectivity (External Virtual Network). Workloads each have a dedicated virtual network and are dual peered to both Internal Virtual Network and External Virtual Network.There is requirement for Internet-bound traffic, traffic between on-premises and Azure, and traffic between workloads in Azure to be mediated, inspected, and/or centrally logged by firewalls in Azure. There is a separate firewall stack for north/south traffic in the External Virtual Network and another for east/west in the Internal Virtual Network.
@@ -239,7 +240,7 @@ This pattern also uses a dedicated virtual network in a dedicated subscription f
 
 The pattern is complex and should only be used where there is a hard requirement to establish separate subscription-level boundaries and blast radiuses for east/west and north/south traffic. It should not used for the purposes of replicating traditional on-premises DMZ architectures. The previous two architectures can establish a DMZ-like architecture in a single virtual network.
 
-#### Benefits
+*Benefits*
 * North/south and east/west firewall have separate subscription-level blast radiuses.
 * North/south and east/west traffic is distributed to two separate firewall stacks reducing the risk of a bottleneck.
 * Traffic between the north/south public subnet and private subnet interfaces is blackholed creating a DMZ-like configuration.
@@ -255,104 +256,104 @@ The pattern is complex and should only be used where there is a hard requirement
 * All virtual machines in the same virtual network can communicate with each other using default system routes.
 * Virtual machine communication between subnets in the same virtual network can be mediated with network security groups.
 
-#### Considerations
+*Considerations*
 * Snowflake pattern that introduces additional complexity for limited security benefits for most organizations.
 * Carving out IP address blocks for Azure must be well planned to avoid frequent changes to static routes.
 * Routing can become complex.
 * Additional costs of running multiple sets of firewalls.
 
-## VWAN - Single Region VWAN Hub
+### VWAN - Single Region VWAN Hub
 ![visual](images/VWAN-OB-1R-NSH.svg)
 
 In this pattern there is a VWAN with a hub in a single region with connections to two virtual networks. 
 
-#### Benefits
+*Benefits*
 * Intra-hub virtual networks can communicate with each other by default.
 
-#### Considerations
+*Considerations*
 * All resources in Azure have direct access to the Internet through the default system route.
 * Mediation between intra-hub virtual networks is done with Network Security Groups.
 
-## VWAN - Single Region VWAN Hub With Single Branch
+### VWAN - Single Region VWAN Hub With Single Branch
 ![visual](images/VWAN-1B-1R-NSH.svg)
 
 In this pattern there is a VWAN with a hub in a single region with connections to two virtual networks. A single branch site is connected to the hub.
 
-#### Benefits
+*Benefits*
 * Intra-hub virtual networks can communicate with each other by default.
 * Branch sites can communicate with intra-hub virtual networks by default.
 
-#### Considerations
+*Considerations*
 * All resources in Azure have direct access to the Internet through the default system route.
 * Mediation between intra-hub virtual networks is done with Network Security Groups.
 * Mediation between branch sites and virtual networks is done with Network Security Groups and optional on-premises security appliances.
 
-## VWAN - Single Region VWAN Hub With Multiple Branches
+### VWAN - Single Region VWAN Hub With Multiple Branches
 ![visual](images/VWAN-2B-1R-NSH.svg)
 
 In this pattern there is a VWAN with a hub in a single region with connections to two virtual networks. Multiple branch sites are connected to the hub.
 
-#### Benefits
+*Benefits*
 * Intra-hub virtual networks can communicate with each other by default.
 * Branch sites can communicate with intra-hub virtual networks by default.
 * Branch sites can communicate with other branch sites by default.
 
-#### Considerations
+*Considerations*
 * All resources in Azure have direct access to the Internet through the default system route.
 * Mediation between intra-hub virtual networks is done with Network Security Groups.
 * Mediation between branch sites and virtual networks is done with Network Security Groups and optional on-premises security appliances.
 * Mediation between branch sites is done with on-premises firewalls.
 
-## VWAN - Multiple Region VWAN Hubs With Multiple Branches Connected to a Single Hub
+### VWAN - Multiple Region VWAN Hubs With Multiple Branches Connected to a Single Hub
 ![visual](images/VWAN-2B-2R-NSH.svg)
 
 In this pattern there are multiple VWAN Hubs in separate regions. Each hub is connected to multiple virtual networks within the region.
 
 Branch sites are connected to a hub in a single region to allow connectivity to the virtual networks in both regions using the VWAN cross hub connectivity.
 
-#### Benefits
+*Benefits*
 * Intra-hub virtual networks can communicate with each other by default.
 * Inter-hub virtual networks can communicate with each other by default.
 * Branch sites can communicate with intra-hub virtual networks by default.
 * Branch sites can communicate with other branch sites by default.
 * Branch sites can comunicate with inter-hub virtual networks by default.
 
-#### Considerations
+*Considerations*
 * All resources in Azure have direct access to the Internet through the default system route.
 * Mediation between intra-hub and inter-hub virtual networks is done with Network Security Groups.
 * Mediation between branch sites and virtual networks both intra-hub and inter-hub is done with Network Security Groups and optional on-premises security appliances.
 * Mediation between branch sites is done with on-premises firewalls.
 * Loss of connectivity from the branch sites to the hub the site is connected to results in loss of connectivity to Azure.
 
-## VWAN - Multiple Region VWAN Hubs With Multiple Branches Connected to Multiple Hubs
+### VWAN - Multiple Region VWAN Hubs With Multiple Branches Connected to Multiple Hubs
 ![visual](images/VWAN-4B-2R-NSH.svg)
 
 This is an appropriate pattern for organizations that want any-to-any connectivity out of the box. It allows for connectivity between branches and virtual networks, including across regions.
 
 It is not appropriate for organizations that require centralized mediation and/or inspection using an NVA (network virtual appliance).
 
-#### Benefits
+*Benefits*
 * Intra-hub virtual networks can communicate with each other by default.
 * Inter-hub virtual networks can communicate with each other by default.
 * Branch sites can communicate with intra-hub virtual networks by default.
 * Branch sites can communicate with other branch sites by default both intra-hub and inter-hub.
 * Branch sites can comunicate with inter-hub virtual networks by default.
 
-#### Considerations
+*Considerations*
 * All resources in Azure have direct access to the Internet through the default system route.
 * Mediation between intra-hub and inter-hub virtual networks is done with Network Security Groups.
 * Mediation between branch sites and virtual networks both intra-hub and inter-hub is done with Network Security Groups and optional on-premises security appliances.
 * Mediation between branch sites is done with on-premises firewalls.
 * Loss of connectivity from the branch sites to the hub the site is connected to results in loss of connectivity to Azure.
 
-## VWAN - Multiple Region VWAN Hubs With Multiple Branches Connected to Multiple Hubs For Redundancy
+### VWAN - Multiple Region VWAN Hubs With Multiple Branches Connected to Multiple Hubs For Redundancy
 ![visual](images/VWAN-4BR-2R-NSH.svg)
 
 This is an appropriate pattern for organizations that want any-to-any connectivity out of the box. It allows for connectivity between branches and virtual networks, including across regions. Branch sites also have redundancy to their connectivity in Azure in the instance an Azure region were to become unavailable.
 
 It is not appropriate for organizations that require centralized mediation and/or inspection using an NVA (network virtual appliance).
 
-#### Benefits
+*Benefits*
 * Intra-hub virtual networks can communicate with each other by default.
 * Inter-hub virtual networks can communicate with each other by default.
 * Branch sites can communicate with intra-hub virtual networks by default.
@@ -361,20 +362,20 @@ It is not appropriate for organizations that require centralized mediation and/o
 * Local preferences can be applied to routes advertised from VWAN Hub to branch sites to prefer a specific connection.
 * If connectivity from a branch site to a hub is lost, connectivity to Azure will still be possible using the connection to the other hub.
 
-#### Considerations
+*Considerations*
 * All resources in Azure have direct access to the Internet through the default system route.
 * Mediation between intra-hub and inter-hub virtual networks is done with Network Security Groups.
 * Mediation between branch sites and virtual networks both intra-hub and inter-hub is done with Network Security Groups and optional on-premises security appliances.
 * Mediation between branch sites is done with on-premises firewalls.
 
-## VWAN - Multiple Region VWAN Secure Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and North and South Firewall using Routing Policies
+### VWAN - Multiple Region VWAN Secure Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and North and South Firewall using Routing Policies
 ![visual](images/VWAN-4BR-2R-SH-NS.svg)
 
 This pattern is **not** recommended for production because it uses the public preview feature of [routing policies](https://docs.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub#gated-public-preview). 
 
 In this pattern, north and south traffic is automatically routed through Azure Firewall or a [compatible NVA (network virtual appliance)](https://docs.microsoft.com/en-us/azure/virtual-wan/about-nva-hub) that is deployed into each VWAN hub using the [Secure Hub feature](https://docs.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub). Traffic can be centrally mediated and/or inspected.
 
-#### Benefits
+*Benefits*
 * Intra-hub virtual networks can communicate with each other by default.
 * Inter-hub virtual networks can communicate with each other by default.
 * Branch sites can communicate with intra-hub virtual networks by default.
@@ -384,7 +385,7 @@ In this pattern, north and south traffic is automatically routed through Azure F
 * If connectivity from a branch site to a hub is lost, connectivity to Azure will still be possible using the connection to the other hub.
 * Traffic to the Internet from the attached virtual networks (and optionally sites) is routed through a supported appliance in the hub for mediation and/or inspection.
 
-#### Considerations
+*Considerations*
 * Mediation between intra-hub and inter-hub virtual networks is done with Network Security Groups.
 * Mediation between branch sites and virtual networks both intra-hub and inter-hub is done with Network Security Groups and optional on-premises security appliances.
 * Mediation between branch sites is done with on-premises firewalls.
@@ -400,7 +401,7 @@ In this pattern, north and south traffic is automatically routed through Azure F
 
 The major drawback of this pattern is inter-hub traffic between virtual networks or branches connected to different hubs in separate regions is not possible. As of March 2022 this a [VWAN limitation](https://docs.microsoft.com/en-us/azure/firewall-manager/overview#known-issues).
 
-#### Benefits
+*Benefits*
 * Intra-hub virtual networks can communicate with each other by default.
 * Branch sites can communicate with intra-hub virtual networks by default.
 * Branch sites can communicate with other branch sites by default intra-hub..
@@ -409,7 +410,7 @@ The major drawback of this pattern is inter-hub traffic between virtual networks
 * Traffic to the Internet from the attached virtual networks (and optionally sites) is routed through a supported appliance in the hub for mediation and/or inspection.
 * Traffic to and from the branch and virtual network intra-hub is routed through a supported appliance in the hub for mediation and/or inspection.
 
-#### Considerations
+*Considerations*
 * Inter-hub virtual networks cannot communicate with each other.
 * Branch sites not connected to the same hub cannot communicate with each other.
 * Mediation between branch sites is done with on-premises firewalls.
@@ -426,7 +427,7 @@ Custom routing is used to route the supported traffic through an Azure Firewall 
 
 One major consideration of this pattern is loss of direct connectivity of a branch site to a hub in one region results in the loss of connectivity to virtual networks within that hub. This is again the result of the [VWAN limitation](https://docs.microsoft.com/en-us/azure/firewall-manager/overview#known-issues).
 
-#### Benefits
+*Benefits*
 * Intra-hub virtual networks can communicate with each other by default.
 * Inter-hub virtual networks can communicate with each other by default.
 * Branch sites can communicate with intra-hub virtual networks by default.
@@ -436,7 +437,7 @@ One major consideration of this pattern is loss of direct connectivity of a bran
 * Traffic to the Internet from the attached virtual networks (and optionally sites) is routed through a supported appliance in the hub for mediation and/or inspection.
 * Traffic to and from the branch and virtual network intra-hub is routed through a supported appliance in the hub for mediation and/or inspection.
 
-#### Considerations
+*Considerations*
 * Mediation between branch sites is done with on-premises firewalls.
 * Static routes on default route tables are not supported.
 * Propagate default route is enabled by default on branch site connections.
@@ -452,7 +453,7 @@ Custom routing is used to route the supported traffic through an Azure Firewall 
 
 One major consideration of this pattern is loss of direct connectivity of a branch site to the hub it is connected to results in loss of connectivity to Azure.
 
-#### Benefits
+*Benefits*
 * Intra-hub virtual networks can communicate with each other by default.
 * Inter-hub virtual networks can communicate with each other by default.
 * Branch sites can communicate with intra-hub virtual networks by default.
@@ -462,7 +463,7 @@ One major consideration of this pattern is loss of direct connectivity of a bran
 * Traffic to the Internet from the attached virtual networks (and optionally sites) is routed through a supported appliance in the hub for mediation and/or inspection.
 * Traffic to and from the branch and virtual network intra-hub is routed through a supported appliance in the hub for mediation and/or inspection.
 
-#### Considerations
+*Considerations*
 * Mediation between branch sites is done with on-premises firewalls.
 * Static routes on default route tables are not supported.
 * Propagate default route is enabled by default on branch site connections.
