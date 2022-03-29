@@ -7,7 +7,7 @@ This repository contains a collection of core networking patterns starting from 
 
 For the purposes of this repository, north and south traffic is traffic ingressing or egressing to the Internet. East and west is traffic ingressing or egressing between on-premises and Azure or between workloads running in Azure.
 
-This repository now includes patterns for Azure Virtual WAN (VWAN). Those patterns include a considerable amount of detail to help educate customers on routing within VWAN. Due to the detail, the diagrams are best viewed by downloading the diagrams from this repository. These are contained in the [images folder](/images/).
+This repository now includes patterns for Azure Virtual WAN (VWAN). Those patterns include a considerable amount of detail to help educate customers on routing within VWAN. Due to the detail, the diagrams are best viewed by downloading the diagrams from this repository. These are contained in the [images folder](/images/). VWAN is an ever evolving Microsoft product and many of the limitations outlined in this pattern are in the process of being addressed. As those features make their way to general availability the patterns will be modified to reflect that.
 
 **Note that in the patterns with firewalls, the firewalls are assumed to have a separate dedicated network interface in a management subnet. This is not shown in the diagrams.**
 
