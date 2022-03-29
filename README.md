@@ -7,25 +7,43 @@ This repository contains a collection of core networking patterns starting from 
 
 For the purposes of this repository, north and south traffic is traffic ingressing or egressing to the Internet. East and west is traffic ingressing or egressing between on-premises and Azure or between workloads running in Azure.
 
+This repository now includes patterns for Azure Virtual WAN (VWAN). Those patterns include a considerable amount of detail to help educate customers on routing within VWAN. Due to the detail, the diagrams are best viewed by downloading the diagrams from this repository. These are contained in the [images folder](/images/).
+
 **Note that in the patterns with firewalls, the firewalls are assumed to have a separate dedicated network interface in a management subnet. This is not shown in the diagrams.**
 
-**Note that these patterns focus on traditional hub and spoke architectures. Organizations are encouraged to explore [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-about) for additional alternatives. There are significant considerations to using [Azure Virtual WAN](https://docs.microsoft.com/en-us/azure/virtual-wan/virtual-wan-faq) and organizations are encouraged to consult with their Microsoft account teams or trusted Microsoft partners before deciding on Azure Virtual WAN.**
+**Note that these patterns in the VWAN section are not inclusive of all VWAN patterns. The patterns included are the patterns the author believes most viable and appropriate. Customers should work with their trusted Microsoft partners and account team if these patterns do not work for their use cases.**
 
 **Reference [Palo Alto](https://www.paloaltonetworks.com/resources/guides/azure-transit-vnet-deployment-guide) for great detail on firewall architecture, design, and implementation guidance in Azure.**
 
 For detail on the traffic flows of the more complex network architectures listed here, reference [this repository](https://github.com/mattfeltonma/azure-networking-patterns).
 
 ## Sections
+###  General
 * [Single Virtual Network and Single Subnet](#single-vnet-and-single-subnet)
 * [Single Virtual Network and Multiple Subnets](#single-vnet-and-multiple-subnets)
 * [Single Virtual Network and Multiple Workloads](#single-vnet-and-multiple-workloads)
 * [Single Virtual Network and On-Premises Connectivity](#single-vnet-and-on-premises-connectivity)
 * [Peered Virtual Networks and On-Premises Connectivity and Multiple Workloads](#peered-vnets-and-on-premises-connectivity-with-multiple-workloads)
+
+### Hub and Spoke
 * [Hub and Spoke With a Flat Network and Forced Tunneling](#hub-and-spoke-with-a-flat-network-and-forced-tunneling)
 * [Hub and Spoke With East and West Firewall and Forced Tunneling](#hub-and-spoke-with-east-and-west-firewall-and-forced-tunneling)
 * [Hub and Spoke With Single Firewall For North South East West](#hub-and-spoke-with-single-firewall-for-north-south-east-west)
 * [Hub and Spoke With Dedicated North and South Firewall and Dedicated East and West Firewall](#hub-and-spoke-with-dedicated-north-and-south-firewall-and-dedicated-east-and-west-firewall)
 * [Hub and Spoke With Dedicated North and South Firewall and Dedicated East and West Firewall In Seperate Virtual Networks](#hub-and-spoke-with-dedicated-north-and-south-firewall-and-dedicated-east-and-west-firewall-in-seperate-virtual-networks)
+
+### Virtual WAN
+* Single region VWAN hub
+* Single region VWAN hub with single branch
+* Single region VWAN Hub with multiple branches
+* Multiple region VWAN Hubs with multiple branches connected to a single hub
+* Multiple region VWAN Hubs with multiple branches connected to multiple hubs
+* Multiple region VWAN Hubs with multiple branches connected to multiple hubs for redundancy
+* Multiple region VWAN Secure Hubs with multiple branches connected to multiple hubs for redundancy and north and south firewall using routing policies
+* Multiple region VWAN Secure Hubs with multiple branches connected to multiple hubs for redundancy and north south east west firewall using routing policies
+* Multiple region VWAN Secure Hubs with multiple branches connected to multiple hubs for redundancy and north south east west firewall using routing policies
+* Multiple region VWAN Secure Hubs with multiple branches connected to multiple hubs for redundancy and north south east west firewall using custom routing - option 1
+* Multiple region VWAN Secure Hubs with multiple branches connected to multiple hubs for redundancy and north south east west firewall using custom routing - option 2
 
 ## Single VNet And Single Subnet
 ![visual](images/singlevnetsinglesubnet.svg)
@@ -243,3 +261,210 @@ The pattern is complex and should only be used where there is a hard requirement
 * Routing can become complex.
 * Additional costs of running multiple sets of firewalls.
 
+## VWAN - Single Region VWAN Hub
+![visual](images/VWAN-OB-1R-NSH.svg)
+
+In this pattern there is a VWAN with a hub in a single region with connections to two virtual networks. 
+
+#### Benefits
+* Intra-hub virtual networks can communicate with each other by default.
+
+#### Considerations
+* All resources in Azure have direct access to the Internet through the default system route.
+* Mediation between intra-hub virtual networks is done with Network Security Groups.
+
+## VWAN - Single Region VWAN Hub With Single Branch
+![visual](images/VWAN-1B-1R-NSH.svg)
+
+In this pattern there is a VWAN with a hub in a single region with connections to two virtual networks. A single branch site is connected to the hub.
+
+#### Benefits
+* Intra-hub virtual networks can communicate with each other by default.
+* Branch sites can communicate with intra-hub virtual networks by default.
+
+#### Considerations
+* All resources in Azure have direct access to the Internet through the default system route.
+* Mediation between intra-hub virtual networks is done with Network Security Groups.
+* Mediation between branch sites and virtual networks is done with Network Security Groups and optional on-premises security appliances.
+
+## VWAN - Single Region VWAN Hub With Multiple Branches
+![visual](images/VWAN-2B-1R-NSH.svg)
+
+In this pattern there is a VWAN with a hub in a single region with connections to two virtual networks. Multiple branch sites are connected to the hub.
+
+#### Benefits
+* Intra-hub virtual networks can communicate with each other by default.
+* Branch sites can communicate with intra-hub virtual networks by default.
+* Branch sites can communicate with other branch sites by default.
+
+#### Considerations
+* All resources in Azure have direct access to the Internet through the default system route.
+* Mediation between intra-hub virtual networks is done with Network Security Groups.
+* Mediation between branch sites and virtual networks is done with Network Security Groups and optional on-premises security appliances.
+* Mediation between branch sites is done with on-premises firewalls.
+
+## VWAN - Multiple Region VWAN Hubs With Multiple Branches Connected to a Single Hub
+![visual](images/VWAN-2B-2R-NSH.svg)
+
+In this pattern there are multiple VWAN Hubs in separate regions. Each hub is connected to multiple virtual networks within the region.
+
+Branch sites are connected to a hub in a single region to allow connectivity to the virtual networks in both regions using the VWAN cross hub connectivity.
+
+#### Benefits
+* Intra-hub virtual networks can communicate with each other by default.
+* Inter-hub virtual networks can communicate with each other by default.
+* Branch sites can communicate with intra-hub virtual networks by default.
+* Branch sites can communicate with other branch sites by default.
+* Branch sites can comunicate with inter-hub virtual networks by default.
+
+#### Considerations
+* All resources in Azure have direct access to the Internet through the default system route.
+* Mediation between intra-hub and inter-hub virtual networks is done with Network Security Groups.
+* Mediation between branch sites and virtual networks both intra-hub and inter-hub is done with Network Security Groups and optional on-premises security appliances.
+* Mediation between branch sites is done with on-premises firewalls.
+* Loss of connectivity from the branch sites to the hub the site is connected to results in loss of connectivity to Azure.
+
+## VWAN - Multiple Region VWAN Hubs With Multiple Branches Connected to Multiple Hubs
+![visual](images/VWAN-4B-2R-NSH.svg)
+
+This is an appropriate pattern for organizations that want any-to-any connectivity out of the box. It allows for connectivity between branches and virtual networks, including across regions.
+
+It is not appropriate for organizations that require centralized mediation and/or inspection using an NVA (network virtual appliance).
+
+#### Benefits
+* Intra-hub virtual networks can communicate with each other by default.
+* Inter-hub virtual networks can communicate with each other by default.
+* Branch sites can communicate with intra-hub virtual networks by default.
+* Branch sites can communicate with other branch sites by default both intra-hub and inter-hub.
+* Branch sites can comunicate with inter-hub virtual networks by default.
+
+#### Considerations
+* All resources in Azure have direct access to the Internet through the default system route.
+* Mediation between intra-hub and inter-hub virtual networks is done with Network Security Groups.
+* Mediation between branch sites and virtual networks both intra-hub and inter-hub is done with Network Security Groups and optional on-premises security appliances.
+* Mediation between branch sites is done with on-premises firewalls.
+* Loss of connectivity from the branch sites to the hub the site is connected to results in loss of connectivity to Azure.
+
+## VWAN - Multiple Region VWAN Hubs With Multiple Branches Connected to Multiple Hubs For Redundancy
+![visual](images/VWAN-4BR-2R-NSH.svg)
+
+This is an appropriate pattern for organizations that want any-to-any connectivity out of the box. It allows for connectivity between branches and virtual networks, including across regions. Branch sites also have redundancy to their connectivity in Azure in the instance an Azure region were to become unavailable.
+
+It is not appropriate for organizations that require centralized mediation and/or inspection using an NVA (network virtual appliance).
+
+#### Benefits
+* Intra-hub virtual networks can communicate with each other by default.
+* Inter-hub virtual networks can communicate with each other by default.
+* Branch sites can communicate with intra-hub virtual networks by default.
+* Branch sites can communicate with other branch sites by default both intra-hub and inter-hub.
+* Branch sites can comunicate with inter-hub virtual networks by default.
+* Local preferences can be applied to routes advertised from VWAN Hub to branch sites to prefer a specific connection.
+* If connectivity from a branch site to a hub is lost, connectivity to Azure will still be possible using the connection to the other hub.
+
+#### Considerations
+* All resources in Azure have direct access to the Internet through the default system route.
+* Mediation between intra-hub and inter-hub virtual networks is done with Network Security Groups.
+* Mediation between branch sites and virtual networks both intra-hub and inter-hub is done with Network Security Groups and optional on-premises security appliances.
+* Mediation between branch sites is done with on-premises firewalls.
+
+## VWAN - Multiple Region Secure Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and North and South Firewall using Routing Policies
+![visual](images/VWAN-4BR-2R-SH-NS.svg)
+
+This pattern is **not** recommended for production because it uses the public preview feature of [routing policies](https://docs.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub#gated-public-preview). 
+
+In this pattern, north and south traffic is automatically routed through Azure Firewall or a [compatible NVA (network virtual appliance)](https://docs.microsoft.com/en-us/azure/virtual-wan/about-nva-hub) is deployed into each VWAN hub using the [Secure Hub feature](https://docs.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub). Traffic can be centrally mediated and/or inspected.
+
+#### Benefits
+* Intra-hub virtual networks can communicate with each other by default.
+* Inter-hub virtual networks can communicate with each other by default.
+* Branch sites can communicate with intra-hub virtual networks by default.
+* Branch sites can communicate with other branch sites by default both intra-hub and inter-hub.
+* Branch sites can comunicate with inter-hub virtual networks by default.
+* Local preferences can be applied to routes advertised from VWAN Hub to branch sites to prefer a specific connection.
+* If connectivity from a branch site to a hub is lost, connectivity to Azure will still be possible using the connection to the other hub.
+* Traffic to the Internet from the attached virtual networks (and optionally sites) is routed through a supported appliance in the hub for mediation and/or inspection.
+
+#### Considerations
+* Mediation between intra-hub and inter-hub virtual networks is done with Network Security Groups.
+* Mediation between branch sites and virtual networks both intra-hub and inter-hub is done with Network Security Groups and optional on-premises security appliances.
+* Mediation between branch sites is done with on-premises firewalls.
+* Static routes on default route tables are not supported.
+* Propagate default route is enabled by default on branch site connections.
+
+## VWAN - Multiple Region VWAN Secure Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and North South East West Firewall Using Routing Policies
+![visual](images/VWAN-4BR-2R-SH-NSEW.svg)
+
+This pattern is **not** recommended for production because it uses the public preview feature of [routing policies](https://docs.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub#gated-public-preview). 
+
+In this pattern, north and south traffic is automatically routed through Azure Firewall or a [compatible NVA (network virtual appliance)](https://docs.microsoft.com/en-us/azure/virtual-wan/about-nva-hub) is deployed into each VWAN hub using the [Secure Hub feature](https://docs.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub). Additionally, east and west traffic intra-hub is also automatically routed through the appliance in the hub. Traffic can be centrally mediated and/or inspected.
+
+The major drawback of this pattern is inter-hub traffic between virtual networks or branches connected to different hubs in separate regions is not possible. As of March 2022 this a [VWAN limitation](https://docs.microsoft.com/en-us/azure/firewall-manager/overview#known-issues).
+
+#### Benefits
+* Intra-hub virtual networks can communicate with each other by default.
+* Branch sites can communicate with intra-hub virtual networks by default.
+* Branch sites can communicate with other branch sites by default intra-hub..
+* Local preferences can be applied to routes advertised from VWAN Hub to branch sites to prefer a specific connection.
+* If connectivity from a branch site to a hub is lost, connectivity to the hub virtual networks the branch still has connection to will still be possible.
+* Traffic to the Internet from the attached virtual networks (and optionally sites) is routed through a supported appliance in the hub for mediation and/or inspection.
+* Traffic to and from the branch and virtual network intra-hub is routed through a supported appliance in the hub for mediation and/or inspection.
+
+#### Considerations
+* Inter-hub virtual networks cannot communicate with each other.
+* Branch sites not connected to the same hub cannot communicate with each other.
+* Mediation between branch sites is done with on-premises firewalls.
+* Static routes on default route tables are not supported.
+* Propagate default route is enabled by default on branch site connections.
+* Loss of connectivity of a branch site to a hub prevents that branch site from connecting to virtual networks in that hub.
+
+## VWAN - Multiple Region VWAN Secure Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and North South East West Firewall Using Custom Routing - Option 1
+![visual](images/VWAN-4BR-2R-SH-NSEW-Op1.svg)
+
+This pattern provides some support for central mediation and/or inspection for north/south and some east west traffic including branch-to-virtual network and virtual network-to-virtual network within the same hub. Inter-hub traffic is not centrally mediated and/or inspected due to a [VWAN limitation](https://docs.microsoft.com/en-us/azure/firewall-manager/overview#known-issues).
+
+Custom routing is used to route the supported traffic through an Azure Firewall or a [compatible NVA (network virtual appliance)](https://docs.microsoft.com/en-us/azure/virtual-wan/about-nva-hub) is deployed into each VWAN hub using the [Secure Hub feature](https://docs.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub). This avoids the use of [routing policies](https://docs.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub#gated-public-preview) which are still in preview.
+
+One major consideration of this pattern is loss of direct connectivity of a branch site to a hub in one region results in the loss of connectivity to virtual networks within that hub. This is again the result of the [VWAN limitation](https://docs.microsoft.com/en-us/azure/firewall-manager/overview#known-issues).
+
+#### Benefits
+* Intra-hub virtual networks can communicate with each other by default.
+* Inter-hub virtual networks can communicate with each other by default.
+* Branch sites can communicate with intra-hub virtual networks by default.
+* Branch sites can communicate with inter-hub virtual networks by default.
+* Local preferences can be applied to routes advertised from VWAN Hub to branch sites to prefer a specific connection.
+* If connectivity from a branch site to a hub is lost, connectivity to the hub virtual networks the branch still has connection to will still be possible.
+* Traffic to the Internet from the attached virtual networks (and optionally sites) is routed through a supported appliance in the hub for mediation and/or inspection.
+* Traffic to and from the branch and virtual network intra-hub is routed through a supported appliance in the hub for mediation and/or inspection.
+
+#### Considerations
+* Mediation between branch sites is done with on-premises firewalls.
+* Static routes on default route tables are not supported.
+* Propagate default route is enabled by default on branch site connections.
+* Loss of connectivity of a branch site to a hub prevents that branch site from connecting to virtual networks in that hub.
+* Traffic between inter-hub virtual networks is not mediated and/or inspected by a supported appliance in the hub due to a [VWAN limitation](https://docs.microsoft.com/en-us/azure/firewall-manager/overview#known-issues).
+
+## VWAN - Multiple Region VWAN Secure Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and North South East West Firewall Using Custom Routing - Option 2
+![visual](images/VWAN-4BR-2R-SH-NSEW-Op2.svg)
+
+This pattern is a variation of [option 1](#vwan---multiple-region-vwan-secure-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy-and-north-south-east-west-firewall-using-custom-routing---option-1). It is described in detail in [excellent blog post by Jose Moreno](https://blog.cloudtrooper.net/2020/11/17/virtual-wan-secure-hubs-in-multiple-regions/). The difference in this pattern is that branches are connected to single hub. It provides some support for central mediation and/or inspection for north/south and some east west traffic including branch-to-virtual network and virtual network-to-virtual network within the same hub. Inter-hub traffic is not centrally mediated and/or inspected due to a [VWAN limitation](https://docs.microsoft.com/en-us/azure/firewall-manager/overview#known-issues).
+
+Custom routing is used to route the supported traffic through an Azure Firewall or a [compatible NVA (network virtual appliance)](https://docs.microsoft.com/en-us/azure/virtual-wan/about-nva-hub) is deployed into each VWAN hub using the [Secure Hub feature](https://docs.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub). This avoids the use of [routing policies](https://docs.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub#gated-public-preview) which are still in preview.
+
+One major consideration of this pattern is loss of direct connectivity of a branch site to the hub it is connected to results in loss of connectivity to Azure.
+
+#### Benefits
+* Intra-hub virtual networks can communicate with each other by default.
+* Inter-hub virtual networks can communicate with each other by default.
+* Branch sites can communicate with intra-hub virtual networks by default.
+* Branch sites can communicate with inter-hub virtual networks by default.
+* Local preferences can be applied to routes advertised from VWAN Hub to branch sites to prefer a specific connection.
+* If connectivity from a branch site to a hub is lost, connectivity to the hub virtual networks the branch still has connection to will still be possible.
+* Traffic to the Internet from the attached virtual networks (and optionally sites) is routed through a supported appliance in the hub for mediation and/or inspection.
+* Traffic to and from the branch and virtual network intra-hub is routed through a supported appliance in the hub for mediation and/or inspection.
+
+#### Considerations
+* Mediation between branch sites is done with on-premises firewalls.
+* Static routes on default route tables are not supported.
+* Propagate default route is enabled by default on branch site connections.
+* Loss of connectivity of a branch site to the hub it is connected to results in loss of connectivity to Azure.
+* Traffic between inter-hub virtual networks is not mediated and/or inspected by a supported appliance in the hub due to a [VWAN limitation](https://docs.microsoft.com/en-us/azure/firewall-manager/overview#known-issues).
