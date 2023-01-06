@@ -375,6 +375,8 @@ It is not appropriate for organizations that require centralized mediation and/o
 
 This is an appropriate pattern for organizations that only need north and south traffic inspection and mediation using a 3rd-party firewall that is not supported running in a VWAN Secure Hub. This IS NOT an appropriate pattern for customers who anticipate east and west traffic inspection and mediation requirements down the road.
 
+This pattern is sometimes referred to as "firewall-on-a-stick"
+
 *Benefits*
 * Supports 3rd-party security appliances for north/south traffic inspection
 * Intra-hub virtual networks can communicate with each other by default.
