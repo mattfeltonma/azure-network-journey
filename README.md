@@ -39,6 +39,7 @@ For detail on the traffic flows of the more complex network architectures listed
 * [Multiple region VWAN Hubs with multiple branches connected to a single hub](#vwan---multiple-region-vwan-hubs-with-multiple-branches-connected-to-a-single-hub)
 * [Multiple region VWAN Hubs with multiple branches connected to multiple hubs](#vwan---multiple-region-vwan-hubs-with-multiple-branches-connected-to-multiple-hubs)
 * [Multiple region VWAN Hubs with multiple branches connected to multiple hubs for redundancy](#vwan---multiple-region-vwan-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy)
+* [Multiple region VWAN Hubs with multiple branches connected to multiple hubs for redundancy and north and south firewall using 3rd party firewall](#vwan---multiple-region-vwan-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy-and-north-and-south-3rd-party-firewall)
 * [Multiple region VWAN Secure Hubs with multiple branches connected to multiple hubs for redundancy and north and south firewall using routing policies](#vwan---multiple-region-vwan-secure-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy-and-north-and-south-firewall-using-routing-policies)
 * [Multiple region VWAN Secure Hubs with multiple branches connected to multiple hubs for redundancy and north south east west firewall using routing policies](#vwan---multiple-region-vwan-secure-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy-and-north-south-east-west-firewall-using-custom-routing---option-1)
 
@@ -367,6 +368,28 @@ It is not appropriate for organizations that require centralized mediation and/o
 * Mediation between intra-hub and inter-hub virtual networks is done with Network Security Groups.
 * Mediation between branch sites and virtual networks both intra-hub and inter-hub is done with Network Security Groups and optional on-premises security appliances.
 * Mediation between branch sites is done with on-premises firewalls.
+
+### VWAN - Multiple Region VWAN Hubs With Multiple Branches Connected to Multiple Hubs For Redundancy and North and South 3rd party firewall
+
+![visual](/images/VWAN-4BR-2R-NSH-NS.svg)
+
+This is an appropriate pattern for organizations that only need north and south traffic inspection and mediation using a 3rd-party firewall that is not supported running in a VWAN Secure Hub. This IS NOT an appropriate pattern for customers who anticipate east and west traffic inspection and mediation requirements down the road.
+
+*Benefits*
+* Supports 3rd-party security appliances for north/south traffic inspection
+* Intra-hub virtual networks can communicate with each other by default.
+* Inter-hub virtual networks can communicate with each other by default.
+* Branch sites can communicate with intra-hub virtual networks by default.
+* Branch sites can communicate with other branch sites by default both intra-hub and inter-hub.
+* Branch sites can comunicate with inter-hub virtual networks by default.
+
+*Considerations*
+* Cannot support traffic east/west traffic inspection between virtual networks
+* Traffic inspection between on-premises and Azure or vice versa must be performed by customer on-premises security appliance
+* Loss of security virtual network in a region causes loss of Internet access for virtual networks in that region
+* Mediation between intra-hub and inter-hub virtual networks is done with Network Security Groups.
+* Mediation between branch sites and virtual networks both intra-hub and inter-hub is done with Network Security Groups and optional on-premises security appliances.
+
 
 ### VWAN - Multiple Region VWAN Secure Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and North and South Firewall using Routing Policies
 ![visual](images/VWAN-4BR-2R-SH-NS.svg)
