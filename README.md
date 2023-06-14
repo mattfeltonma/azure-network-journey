@@ -33,11 +33,11 @@ For detail on the traffic flows of the more complex network architectures listed
 * [Multiple region VWAN Hubs with multiple branches connected to a single hub](#vwan---multiple-region-vwan-hubs-with-multiple-branches-connected-to-a-single-hub)
 * [Multiple region VWAN Hubs with multiple branches connected to multiple hubs](#vwan---multiple-region-vwan-hubs-with-multiple-branches-connected-to-multiple-hubs)
 * [Multiple region VWAN Hubs with multiple branches connected to multiple hubs for redundancy](#vwan---multiple-region-vwan-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy)
-* [Multiple Region VWAN Secure Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and North and South Firewall Using Routing Intent](#vwan---multiple-region-vwan-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy-and-north-and-south-firewall-using-routing-intent)
+* [Multiple Region VWAN Secure Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and North and South Firewall Using Routing Intent](#vwan---multiple-region-vwan-secure-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy-and-north-and-south-firewall-using-routing-intent)
 * [Multiple Region VWAN Secure Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and North South East West Firewall Using Routing Intent](#vwan---multiple-region-vwan-secure-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy-and-north-south-east-west-firewall-using-routing-intent)
-* [Multiple Region VWAN Secure Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and North South East West Firewall Using Routing Intent](#vwan---multiple-region-vwan-secure-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy-and-east-west-firewall-using-routing-intent-with-forced-tunneling)
-* [Multiple Region VWAN Hubs With Multiple Branches Connected to Multiple Hubs For Redundancy and North and South Third Party Firewall](#vwan---multiple-region-vwan-secure-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy-and-north-and-south-third-party-firewall)
-* [Multiple Region VWAN Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and North South East West Third party firewall](#vwan---multiple-region-vwan-secure-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy-and-north-south-east-west-third-party-firewall)
+* [Multiple Region VWAN Secure Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and East West Firewall Using Routing Intent With Forced Tunneling](#vwan---multiple-region-vwan-secure-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy-and-east-west-firewall-using-routing-intent-with-forced-tunneling)
+* [Multiple Region VWAN Hubs With Multiple Branches Connected to Multiple Hubs For Redundancy and North and South Third Party Firewall](#vwan---multiple-region-vwan-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy-and-north-and-south-third-party-firewall)
+* [Multiple Region VWAN Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and North South East West Third party firewall](#vwan---multiple-region-vwan-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy-and-north-south-east-west-third-party-firewall)
 
 ## Patterns
 ### Single VNet And Single Subnet
@@ -426,7 +426,7 @@ Note that as of June 2023 customers cannot use the Internet traffic routing poli
 * When using Azure Firewall the traffic sent back on-premises will be SNATed to the Azure Firewall private IP address.
 * User-defined route for the default route must be maintained on spoke virtual network.
 
-### VWAN - Multiple Region VWAN Hubs With Multiple Branches Connected to Multiple Hubs For Redundancy and North and South 3rd party firewall
+### VWAN - Multiple Region VWAN Hubs With Multiple Branches Connected to Multiple Hubs For Redundancy and North and South Third Party Firewall
 
 ![visual](/images/VWAN-4BR-2R-NVA-NS.svg)
 
@@ -450,7 +450,7 @@ This pattern is sometimes referred to as "firewall-on-a-stick"
 * Mediation between branch sites and virtual networks both intra-hub and inter-hub is done with Network Security Groups and optional on-premises security appliances.
 
 
-### VWAN - Multiple Region VWAN Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and North South East West 3rd party firewall
+### VWAN - Multiple Region VWAN Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and North South East West Third Party Firewall
 
 ![visual](images/VWAN-4BR-2R-NVA-NSEW.svg)
 
