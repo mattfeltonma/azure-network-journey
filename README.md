@@ -404,28 +404,6 @@ The author recommends this pattern for regulated customers using Azure Virtual W
 * Requires a security appliance that is supported to run in a VWAN Secure Hub
 * Static routes on default route tables are not supported.
 
-### VWAN - Multiple Region VWAN Secure Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and East West Firewall Using Routing Intent with Forced Tunneling
-![visual](images/VWAN-4BR-2R-SH-EW-FTNS.svg)
-
-In this pattern east and west traffic is automatically routed through Azure Firewall or a [compatible NVA (network virtual appliance)](https://docs.microsoft.com/en-us/azure/virtual-wan/about-nva-hub) that is deployed into each VWAN hub using the [Secure Hub feature](https://docs.microsoft.com/en-us/azure/firewall-manager/secured-virtual-hub). Traffic destined for the Internet from Azure is routed back on-premises for egress out of a customer's data center (forced tunneling).
-
-Note that as of June 2023 customers cannot use the Internet traffic routing policy in combination with advertising a default route from on-premises. This limitation may be lifted at some point and this pattern will no longer be needed.
-
-*Benefits*
-* Intra-hub virtual networks can communicate with each other by default.
-* Branch sites can communicate with intra-hub virtual networks by default.
-* Branch sites can communicate with other branch sites by default intra-hub..
-* Local preferences can be applied to routes advertised from VWAN Hub to branch sites to prefer a specific connection.
-* If connectivity from a branch site to a hub is lost, connectivity to the hub virtual networks the branch still has connection to will still be possible.
-* Traffic to the Internet from the attached virtual networks is routed back on-premises for egress out of the customer's data center.
-* Traffic to and from the branch and virtual network intra-hub is routed through a supported appliance in the hub for mediation and/or inspection.
-* Traffic between branch sites is routed through a supported security appliance in the hub for mediation and/or inspection.
-* Traffic between virtual networks both within region and between regions is routed through a supported security appliance in the hub for mediation and/or inspection.
-
-*Considerations*
-* When using Azure Firewall the traffic sent back on-premises will be SNATed to the Azure Firewall private IP address.
-* User-defined route for the default route must be maintained on spoke virtual network.
-
 ### VWAN - Multiple Region VWAN Hubs With Multiple Branches Connected to Multiple Hubs For Redundancy and North and South Third Party Firewall
 
 ![visual](/images/VWAN-4BR-2R-NVA-NS.svg)
