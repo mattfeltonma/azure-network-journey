@@ -49,7 +49,7 @@ For detail on the traffic flows of the more complex network architectures listed
 
 ### Additional Resources
 * [Wonderful video by Adam Stuart on what the route tables look like with ExpressRoute](https://www.youtube.com/watch?v=Pg7dGDwNNPU)
-* [Excellent write-up by Heather Sze on Azure Route Server pattern for cross-region connectivity]
+* [Excellent write-up by Heather Sze on Azure Route Server pattern for cross-region connectivity](https://github.com/hsze/MultiRegion-HubSpoke-ERBowTie-ARS)
 
 ## Patterns
 ### Single VNet And Single Subnet
