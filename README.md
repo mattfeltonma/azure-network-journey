@@ -47,6 +47,10 @@ For detail on the traffic flows of the more complex network architectures listed
 * [Multiple Region VWAN Hubs With Multiple Branches Connected to Multiple Hubs For Redundancy and North and South Third Party Firewall](#vwan---multiple-region-vwan-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy-and-north-and-south-third-party-firewall)
 * [Multiple Region VWAN Hubs with Multiple Branches Connected to Multiple Hubs for Redundancy and North South East West Third party firewall](#vwan---multiple-region-vwan-hubs-with-multiple-branches-connected-to-multiple-hubs-for-redundancy-and-north-south-east-west-third-party-firewall)
 
+### Additional Resources
+* [Wonderful video by Adam Stuart on what the route tables look like with ExpressRoute](https://www.youtube.com/watch?v=Pg7dGDwNNPU)
+* [Excellent write-up by Heather Sze on Azure Route Server pattern for cross-region connectivity]
+
 ## Patterns
 ### Single VNet And Single Subnet
 ![visual](images/singlevnetsinglesubnet.svg)
