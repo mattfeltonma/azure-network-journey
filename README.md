@@ -1,7 +1,9 @@
 # A Journey through Azure Networking
 
 # Updates
+* 1/8/2025 - Small fixes to diagrams
 * 1/7/2025 - v2 hub and spoke diagrams
+
 
 ## Overview
 Organizations often begin the cloud journey with simple requirements. These requirements grow as an organization scales, matures, and migrates critical data and workloads. As more requirements are introduced, the architecture of the an organization's cloud deployment becomes more complex.
