@@ -34,6 +34,7 @@ For detail on the traffic flows of the more complex network architectures listed
 * [Multiple Region Hub And Spoke With Forced Tunneling And No Firewall With ExpressRoute Bowtie](#multiple-region-hub-and-spoke-with-forced-tunneling-and-no-firewall-with-expressroute-bowtie)
 * [Multiple Region Hub And Spoke With Forced Tunneling and East West Firewall And No Global Peering](#multiple-region-hub-and-spoke-with-forced-tunneling-and-east-west-firewall-and-no-global-peering)
 * [Multiple Region Hub And Spoke With Forced Tunneling and East West Firewall And With Global Peering](#multiple-region-hub-and-spoke-with-forced-tunneling-and-east-west-firewall-and-with-global-peering)
+* [Multiple Region Hub And Spoke With North South East West Firewall And With Global Peering](#multiple-region-hub-and-spoke-with-north-south-east-west-firewall-and-with-global-peering)
 
 ### Virtual WAN
 * [Single region VWAN hub](#vwan---single-region-vwan-hub)
@@ -337,7 +338,7 @@ This pattern may be used for proof-of-concepts where latency between workloads w
 
 In this pattern there is a hub virtual network in each region withan ExpressRoute Gateway. Hub virtual networks are not peered. An ExpressRoute bowtie has been setup. Global peering between hub virtual networks has not been setup. Traffic between Azure regions routes across MSEEs to provide intra-region and inter-region routing.
 
-This pattern may be used in an attemp to save on peering costs. I do not recommended this pattern for production workloads.
+This pattern may be used in an attempt to save on peering costs. I do not recommended this pattern for production workloads.
 
 *Benefits*
 * Workloads in different Azure regions can communicate with each other by using the MSEE (Microsoft Enterprise Edge) routers.
