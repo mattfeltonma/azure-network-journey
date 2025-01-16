@@ -27,9 +27,9 @@ For detail on the traffic flows of the more complex network architectures listed
 
 ### Hub and Spoke
 * [Hub And Spoke With On-Premises Connectivity Using VPN](#hub-and-spoke-with-on-premises-connectivity-using-vpn)
-* [Hub and Spoke With a Flat Network and Forced Tunneling](#hub-and-spoke-with-a-flat-network-and-forced-tunneling)
-* [Hub and Spoke With East and West Firewall and Forced Tunneling VPN](#hub-and-spoke-with-east-and-west-firewall-and-forced-tunneling-vpn)
-* [Hub and Spoke With East and West Firewall and Forced Tunneling ExpressRoute](#hub-and-spoke-with-east-and-west-firewall-and-forced-tunneling-expressroute)
+* [Hub and Spoke With a Flat Network and Forced Tunneling VPN](#hub-and-spoke-with-a-flat-network-and-forced-tunneling-vpn)
+* [Hub and Spoke With a Flat Network and Forced Tunneling ExpressRoute](#hub-and-spoke-with-a-flat-network-and-forced-tunneling-expressroute)
+* [Hub and Spoke With East and West Firewall and Forced Tunneling](#hub-and-spoke-with-east-and-west-firewall-and-forced-tunneling)
 * [Hub and Spoke With Single Firewall For North South East West](#hub-and-spoke-with-single-firewall-for-north-south-east-west)
 * [Hub and Spoke With Dedicated North and South Firewall and Dedicated East and West Firewall](#hub-and-spoke-with-dedicated-north-and-south-firewall-and-dedicated-east-and-west-firewall)
 * [Multiple Region Hub And Spoke With Forced Tunneling And No Firewall](#multiple-region-hub-and-spoke-with-forced-tunneling-and-no-firewall)
